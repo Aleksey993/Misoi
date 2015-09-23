@@ -28,20 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
             this.MakePhotoButton = new System.Windows.Forms.Button();
             this.mainPicture = new System.Windows.Forms.PictureBox();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.mainPicture)).BeginInit();
             this.SuspendLayout();
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(22, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(250, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Миша лох, как подключишься обызвай Альбину";
             // 
             // MakePhotoButton
             // 
@@ -68,28 +59,37 @@
             this.mainPicture.TabIndex = 4;
             this.mainPicture.TabStop = false;
             // 
+            // button1
+            // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button1.Location = new System.Drawing.Point(125, 287);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(109, 23);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "Бинаризировать";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(461, 322);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.mainPicture);
             this.Controls.Add(this.MakePhotoButton);
-            this.Controls.Add(this.label1);
             this.Name = "MainForm";
             this.Text = "WhereYouWatch";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.mainPicture)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button MakePhotoButton;
         private System.Windows.Forms.PictureBox mainPicture;
+        private System.Windows.Forms.Button button1;
     }
 }
 

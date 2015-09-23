@@ -46,8 +46,29 @@ namespace WhereYouWatch
 
         void videoSource_NewFrame(object sender, NewFrameEventArgs eventArgs)
         {
-            newImage= (Bitmap)eventArgs.Frame.Clone();
+            newImage = (Bitmap)eventArgs.Frame.Clone();
             mainPicture.Image = newImage;
         }
+
+        private void button1_Click_1(object sender, EventArgs e)  // кнопка "Бинаризировать"
+        {
+            try
+            {
+                if (!(mainPicture.Image.GetType() == typeof(Bitmap))) // мб эта проверка и не нужна?  а ещё нужна проверка на то, есть ли фотка вообще
+                {
+                    throw new InvalidCastException("Ошибка преобразования типа файла к Bitmap-у");
+                }
+                Bitmap grayscale = Binarization.ConverToGrayBitmap((Bitmap)mainPicture.Image);  // переводим изображение в серые тона
+                // бинаризируем изображение по методу Отсу, используя изображение, переведённые в серые тона и 
+                mainPicture.Image = Binarization.OtsuBinarize(grayscale);  // вывод на "дисплей" бинаризированного изображения            
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ОШИБКА: " + ex + "\n\n");
+            }
+
+        }
+
+
     }
 }
