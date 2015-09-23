@@ -48,6 +48,7 @@ namespace WhereYouWatch
         {
             newImage = (Bitmap)eventArgs.Frame.Clone();
             mainPicture.Image = newImage;
+            realPicture.Image = newImage;
         }
 
         private void button1_Click_1(object sender, EventArgs e)  // кнопка "Бинаризировать"
@@ -69,6 +70,45 @@ namespace WhereYouWatch
 
         }
 
+        private void LHFilterButton_Click(object sender, EventArgs e)
+        {
+            Bitmap mainBitmap = (Bitmap)mainPicture.Image;
+            Graphics g = mainPicture.CreateGraphics();
+            g.Clear(SystemColors.ControlDarkDark);
+            mainPicture.Image = FilterService.LHFilter(mainBitmap);
+        }
+
+        private void addBrightButton_Click(object sender, EventArgs e)
+        {
+            Bitmap mainBitmap = (Bitmap)mainPicture.Image;
+            Graphics g = mainPicture.CreateGraphics();
+            g.Clear(SystemColors.ControlDarkDark);
+            mainPicture.Image = FilterService.addBright(mainBitmap, 5);
+        }
+
+        private void removeBrightButton_Click(object sender, EventArgs e)
+        {
+            Bitmap mainBitmap = (Bitmap)mainPicture.Image;
+            Graphics g = mainPicture.CreateGraphics();
+            g.Clear(SystemColors.ControlDarkDark);
+            mainPicture.Image = FilterService.addBright(mainBitmap, -5);
+        }
+
+        private void lineBoundsButton_Click(object sender, EventArgs e)
+        {
+            Bitmap mainBitmap = (Bitmap)mainPicture.Image;
+            Graphics g = mainPicture.CreateGraphics();
+            g.Clear(SystemColors.ControlDarkDark);
+            mainPicture.Image = FilterService.lineBounds(mainBitmap);
+        }
+
+        private void clarityButton_Click(object sender, EventArgs e)
+        {
+            Bitmap mainBitmap = (Bitmap)mainPicture.Image;
+            Graphics g = mainPicture.CreateGraphics();
+            g.Clear(SystemColors.ControlDarkDark);
+            mainPicture.Image = FilterService.clarity(mainBitmap);
+        }
 
     }
 }
