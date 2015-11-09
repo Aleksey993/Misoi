@@ -73,7 +73,7 @@ namespace WhereYouWatch
 
 
         // Получение гистограммы изображения, переведённого в серые тона
-        private static int[] ImageHistogram(Bitmap input)
+        private static int[] ImageHistogram(Bitmap originalBitmap)
         {
 
             int[] histogram = new int[256];
@@ -83,11 +83,11 @@ namespace WhereYouWatch
                 histogram[i] = 0;
             }
 
-            for (int i = 0; i < input.Width; i++)
+            for (int i = 0; i < originalBitmap.Width; i++)
             {
-                for (int j = 0; j < input.Height; j++)
+                for (int j = 0; j < originalBitmap.Height; j++)
                 {
-                    int red = input.GetPixel(i, j).R;
+                    int red = originalBitmap.GetPixel(i, j).R;
                     histogram[red]++;
                 }
             }
@@ -96,39 +96,39 @@ namespace WhereYouWatch
 
 
         // вычисление порога для бинаризиации методом Отсу/Оцу
-        private static int OtsuTreshold(Bitmap original)
+        private static int OtsuTreshold(Bitmap originalBitmap)
         {
 
-            int[] histogram = ImageHistogram(original);
-            int total = original.Height * original.Width;
+            int[] histogram = ImageHistogram(originalBitmap);
+            int totalPixels = originalBitmap.Height * originalBitmap.Width;
 
-            float sum = 0;
+            float averageLum = 0;
             for (int i = 0; i < 256; i++)
             {
-                sum += i * histogram[i];
+                averageLum += i * histogram[i];
             }
 
-            float sumB = 0;
-            int wB = 0, wF = 0, threshold = 0;
-            float varMax = 0, mB = 0, mF = 0, varBetween = 0;
+            float averageLumBClass = 0;
+            int wA = 0, wB = 0, threshold = 0;
+            float maxDispersiya = 0, mA = 0, mB = 0, tempDispersiya = 0;
 
             for (int i = 0; i < 256; i++)
             {
-                wB += histogram[i];
-                if (wB == 0) continue;
-                wF = total - wB;
+                wA += histogram[i];
+                if (wA == 0) continue;
+                wB = totalPixels - wA;
 
-                if (wF == 0) break;
+                if (wB == 0) break;
 
-                sumB += (float)(i * histogram[i]);
-                mB = sumB / wB;
-                mF = (sum - sumB) / wF;
+                averageLumBClass += (float)(i * histogram[i]);
+                mA = averageLumBClass / wA;
+                mB = (averageLum - averageLumBClass) / wB;
 
-                varBetween = (float)wB * (float)wF * (mB - mF) * (mB - mF);
+                tempDispersiya = (float)wA * (float)wB * (mA - mB) * (mA - mB);
 
-                if (varBetween > varMax)
+                if (tempDispersiya > maxDispersiya)
                 {
-                    varMax = varBetween;
+                    maxDispersiya = tempDispersiya;
                     threshold = i;
                 }
             }
@@ -137,20 +137,20 @@ namespace WhereYouWatch
         }
 
         // бинаризиация методом Отсу/Оцу
-        public static Bitmap OtsuBinarize(Bitmap original)
+        public static Bitmap OtsuBinarize(Bitmap originalBitmap)
         {
             int red = 0,  newPixel = 0;
-            int threshold = OtsuTreshold(original);
+            int threshold = OtsuTreshold(originalBitmap);
             Color newPixelColor;
 
-            Bitmap binarized = new Bitmap(original.Width, original.Height);
+            Bitmap binarized = new Bitmap(originalBitmap.Width, originalBitmap.Height);
 
-            for (int i = 0; i < original.Width; i++)
+            for (int i = 0; i < originalBitmap.Width; i++)
             {
-                for (int j = 0; j < original.Height; j++)
+                for (int j = 0; j < originalBitmap.Height; j++)
                 {
-                    red = original.GetPixel(i, j).R;
-                    int alpha = original.GetPixel(i, j).A;
+                    red = originalBitmap.GetPixel(i, j).R;
+                    int alpha = originalBitmap.GetPixel(i, j).A;
                     if (red > threshold) { newPixel = 255; }
                     else { newPixel = 0; }
                     // Return back to original format

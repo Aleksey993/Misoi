@@ -110,5 +110,52 @@ namespace WhereYouWatch
             mainPicture.Image = FilterService.clarity(mainBitmap);
         }
 
+        private void addContrastButton_Click(object sender, EventArgs e)
+        {
+            Bitmap mainBitmap = (Bitmap)mainPicture.Image;
+            Graphics g = mainPicture.CreateGraphics();
+            g.Clear(SystemColors.ControlDarkDark);
+            mainPicture.Image = FilterService.addContrast(mainBitmap,1.5);
+        }
+
+        private void removeContrastButton_Click(object sender, EventArgs e)
+        {
+            Bitmap mainBitmap = (Bitmap)mainPicture.Image;
+            Graphics g = mainPicture.CreateGraphics();
+            g.Clear(SystemColors.ControlDarkDark);
+            mainPicture.Image = FilterService.addContrast(mainBitmap, 0.66);
+        }
+
+        private void gausButton_Click(object sender, EventArgs e)
+        {
+            Bitmap mainBitmap = (Bitmap)mainPicture.Image;
+            Graphics g = mainPicture.CreateGraphics();
+            g.Clear(SystemColors.ControlDarkDark);
+            mainPicture.Image = FilterService.gaus(mainBitmap,7);
+        }
+
+        private void medialFilterButton_Click(object sender, EventArgs e)
+        {
+            Bitmap mainBitmap = (Bitmap)mainPicture.Image;
+            Graphics g = mainPicture.CreateGraphics();
+            g.Clear(SystemColors.ControlDarkDark);
+            mainPicture.Image = FilterService.medial(mainBitmap, 5);
+        }
+
+        private void unsharpFilterButton_Click(object sender, EventArgs e)
+        {
+            Bitmap mainBitmap = (Bitmap)mainPicture.Image;
+            Graphics g = mainPicture.CreateGraphics();
+            g.Clear(SystemColors.ControlDarkDark);
+            mainPicture.Image = FilterService.unsharp(mainBitmap, 7);
+        }
+
+        private void robertsFilterButton_Click(object sender, EventArgs e)
+        {
+            Bitmap mainBitmap = (Bitmap)mainPicture.Image;
+            Graphics g = mainPicture.CreateGraphics();
+            g.Clear(SystemColors.ControlDarkDark);
+            mainPicture.Image = FilterService.roberts(mainBitmap);
+        }
     }
 }
