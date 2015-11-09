@@ -18,7 +18,7 @@ namespace WhereYouWatch.Filter
             int threshold = OtsuTreshold(grayscale);
             Color newPixelColor;
 
-            Bitmap binarized = new Bitmap(grayscale.Width, grayscale.Height);
+            Bitmap resultBitmap = new Bitmap(grayscale.Width, grayscale.Height);
 
             for (int i = 0; i < grayscale.Width; i++)
             {
@@ -31,10 +31,10 @@ namespace WhereYouWatch.Filter
                     // Return back to original format
                     newPixelColor = Color.FromArgb(alpha, newPixel, newPixel, newPixel);
                     // Write pixels into image
-                    binarized.SetPixel(i, j, newPixelColor);
+                    resultBitmap.SetPixel(i, j, newPixelColor);
                 }
             }
-            return binarized;
+            return resultBitmap;
         }
 
 
@@ -94,7 +94,7 @@ namespace WhereYouWatch.Filter
             {
                 for (int j = 0; j < originalBitmap.Height; j++)
                 {
-                    int red = originalBitmap.GetPixel(i, j).R;
+                    var red = originalBitmap.GetPixel(i, j).R;
                     histogram[red]++;
                 }
             }

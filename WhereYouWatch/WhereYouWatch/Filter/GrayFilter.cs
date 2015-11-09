@@ -14,7 +14,7 @@ namespace WhereYouWatch.Filter
             int alpha = 0, red = 0, green = 0, blue = 0, pixelLum = 0;
             Color newPixelColor;
 
-            Bitmap lum = new Bitmap(originalBitmap.Width, originalBitmap.Height);
+            Bitmap resultBitmap = new Bitmap(originalBitmap.Width, originalBitmap.Height);
 
             for (int i = 0; i < originalBitmap.Width; i++)
             {
@@ -29,10 +29,10 @@ namespace WhereYouWatch.Filter
                     // Return back to original format
                     newPixelColor = Color.FromArgb(alpha, pixelLum, pixelLum, pixelLum);
                     // Write pixels into image
-                    lum.SetPixel(i, j, newPixelColor);
+                    resultBitmap.SetPixel(i, j, newPixelColor);
                 }
             }
-            return lum;
+            return resultBitmap;
         }
     }
 }

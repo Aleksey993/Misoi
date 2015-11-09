@@ -13,7 +13,7 @@ namespace WhereYouWatch.Filter
 
         public Bitmap Filter(Bitmap originalBitmap)
         {
-            Bitmap dst = new Bitmap(originalBitmap);
+            Bitmap resultBitmap = new Bitmap(originalBitmap);
             Color color;
             for (int i = SIZE; i < originalBitmap.Width - SIZE; i++)
             {
@@ -41,10 +41,10 @@ namespace WhereYouWatch.Filter
                     blue = blueList.ElementAt(SIZE);
                     color = originalBitmap.GetPixel(i, j);
                     color = Color.FromArgb(color.A, FilterService.SetColor(red), FilterService.SetColor(green), FilterService.SetColor(blue));
-                    dst.SetPixel(i, j, color);
+                    resultBitmap.SetPixel(i, j, color);
                 }
             }
-            return dst;
+            return resultBitmap;
         }
     }
 }

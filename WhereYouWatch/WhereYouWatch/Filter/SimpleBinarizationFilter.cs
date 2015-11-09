@@ -13,8 +13,9 @@ namespace WhereYouWatch.Filter
         public Bitmap Filter(Bitmap originalBitmap)
         {
             int treshold = 0; // порог  
-            System.Drawing.Color color; // цвет - будет разбиваться на RGB
+            Color color; // цвет - будет разбиваться на RGB
             int average = 0;  // средний цвет = яркость
+            Bitmap resultBitmap = new Bitmap(originalBitmap.Width, originalBitmap.Height);
 
             for (int i = 0; i < originalBitmap.Width; i++)
             {
@@ -28,18 +29,16 @@ namespace WhereYouWatch.Filter
 
             treshold = treshold / (originalBitmap.Width * originalBitmap.Height);
 
-            Bitmap dst = new Bitmap(originalBitmap.Width, originalBitmap.Height);
-
             for (int i = 0; i < originalBitmap.Width; i++)
             {
                 for (int j = 0; j < originalBitmap.Height; j++)
                 {
                     color = originalBitmap.GetPixel(i, j);
                     average = (int)(color.R + color.G + color.B) / 3;
-                    dst.SetPixel(i, j, average < treshold ? System.Drawing.Color.Black : System.Drawing.Color.White);
+                    resultBitmap.SetPixel(i, j, average < treshold ? Color.Black : Color.White);
                 }
             }
-            return dst;
+            return resultBitmap;
         }
     }
 }

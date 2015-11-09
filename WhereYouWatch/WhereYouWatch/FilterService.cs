@@ -11,7 +11,7 @@ namespace WhereYouWatch
     {
         public static Bitmap LineAlgoritm (Bitmap originalBitmap, double[,] w, double k)
         {
-            Bitmap dst = new Bitmap(originalBitmap);
+            Bitmap resultBitmap = new Bitmap(originalBitmap);
             Color color;
             int xLength=w.GetLength(0)/2;
             int yLength = w.GetLength(1)/2;
@@ -36,15 +36,15 @@ namespace WhereYouWatch
                     blue = (int)(blue / k); ;
                     color = originalBitmap.GetPixel(i, j);
                     color = Color.FromArgb(color.A, SetColor(red), SetColor(green), SetColor(blue));
-                    dst.SetPixel(i, j, color);
+                    resultBitmap.SetPixel(i, j, color);
                 }
             }
-            return dst;
+            return resultBitmap;
         }
 
         public static Bitmap LineAlgoritm (Bitmap originalBitmap, double[,] w, double k, double a)
         {
-            Bitmap dst = new Bitmap(originalBitmap);
+            Bitmap resultBitmap = new Bitmap(originalBitmap);
             Color color;
             int xLength = w.GetLength(0) / 2;
             int yLength = w.GetLength(1) / 2;
@@ -69,10 +69,10 @@ namespace WhereYouWatch
                     blue = (int)((1 + a) * color.B - a * blue / k);
                     color = originalBitmap.GetPixel(i, j);
                     color = Color.FromArgb(color.A, SetColor(red), SetColor(green), SetColor(blue));
-                    dst.SetPixel(i, j, color);
+                    resultBitmap.SetPixel(i, j, color);
                 }
             }
-            return dst;
+            return resultBitmap;
         }
 
         public static Bitmap AddBright (Bitmap originalBitmap, int offset)
