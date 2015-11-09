@@ -141,5 +141,58 @@ namespace WhereYouWatch
                 return color;
             }
         }
+
+        public static double[ , ] GausExpression (int size)
+        {
+            if (size % 2 == 0)
+            {
+                size++;
+            }
+            var gausList = new List<double>();
+            int u = 0;
+            for (int i = 0; i <= size / 2 + 1; i++)
+            {
+                u += i;
+            }
+            u -= 1;
+            for (int i = 0; i <= u; i++)
+            {
+                gausList.Add(1 / (Math.Sqrt(Math.PI * 2 * u)) * Math.Exp(-((double)(i * i)) / (2 * u)));
+            }
+            var w = new double[size, size];
+            int k = 1;
+            int c = size / 2;
+            w[c, c] = gausList.ElementAt(0);
+            for (int i = 1; i <= c; i++)
+            {
+                for (int j = 0; j <= i; j++)
+                {
+                    w[c + i, c + j] = gausList.ElementAt(k);
+                    w[c + i, c - j] = gausList.ElementAt(k);
+                    w[c - i, c + j] = gausList.ElementAt(k);
+                    w[c - i, c - j] = gausList.ElementAt(k);
+                    w[c + j, c + i] = gausList.ElementAt(k);
+                    w[c - j, c + i] = gausList.ElementAt(k);
+                    w[c + j, c - i] = gausList.ElementAt(k);
+                    w[c - j, c - i] = gausList.ElementAt(k);
+                    k++;
+                }
+            }
+
+            return w;
+        }
+
+        public static double SumGausArray (int size, double [,] gausArray)
+        {
+            double sum = 0;
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    sum += gausArray[i, j];
+                }
+            }
+            return sum;
+        }
     }
 }
