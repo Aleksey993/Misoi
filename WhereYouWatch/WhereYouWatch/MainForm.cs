@@ -17,6 +17,7 @@ namespace WhereYouWatch
     {
         FilterInfoCollection videoDevices;
         VideoCaptureDevice videoSource;
+        IFilter iFilter;
         Image newImage;
 
         public MainForm()
@@ -52,7 +53,7 @@ namespace WhereYouWatch
 
         private void binarizationFilter_Click(object sender, EventArgs e)
         {
-            IFilter otsuFilter = new OtsuBinarizationFilter();
+            iFilter = new OtsuBinarizationFilter();
             
             try
             {
@@ -61,7 +62,7 @@ namespace WhereYouWatch
                     throw new InvalidCastException("Ошибка преобразования типа файла к Bitmap-у");
                 }
                 // бинаризируем изображение по методу Отсу, используя изображение, переведённые в серые тона.
-                mainPicture.Image = otsuFilter.Filter((Bitmap)mainPicture.Image);         
+                mainPicture.Image = iFilter.Filter((Bitmap)mainPicture.Image);         
             }
             catch (Exception ex)
             {
@@ -72,11 +73,11 @@ namespace WhereYouWatch
 
         private void LHFilterButton_Click(object sender, EventArgs e)
         {
-            IFilter LHFilter = new LHFilter();
+            iFilter = new LHFilter();
             Bitmap mainBitmap = (Bitmap)mainPicture.Image;
             Graphics g = mainPicture.CreateGraphics();
             g.Clear(SystemColors.ControlDarkDark);
-            mainPicture.Image = LHFilter.Filter(mainBitmap);
+            mainPicture.Image = iFilter.Filter(mainBitmap);
         }
 
         private void addBrightButton_Click(object sender, EventArgs e)
@@ -97,20 +98,20 @@ namespace WhereYouWatch
 
         private void lineBoundsButton_Click(object sender, EventArgs e)
         {
-            IFilter lineBoundFilter = new LineBoundFilter();
+            iFilter = new LineBoundFilter();
             Bitmap mainBitmap = (Bitmap)mainPicture.Image;
             Graphics g = mainPicture.CreateGraphics();
             g.Clear(SystemColors.ControlDarkDark);
-            mainPicture.Image = lineBoundFilter.Filter(mainBitmap);
+            mainPicture.Image = iFilter.Filter(mainBitmap);
         }
 
         private void clarityButton_Click(object sender, EventArgs e)
         {
-            IFilter clarityFilter = new ClarityFilter();
+            iFilter = new ClarityFilter();
             Bitmap mainBitmap = (Bitmap)mainPicture.Image;
             Graphics g = mainPicture.CreateGraphics();
             g.Clear(SystemColors.ControlDarkDark);
-            mainPicture.Image = clarityFilter.Filter(mainBitmap);
+            mainPicture.Image = iFilter.Filter(mainBitmap);
         }
 
         private void addContrastButton_Click(object sender, EventArgs e)
@@ -131,38 +132,38 @@ namespace WhereYouWatch
 
         private void gausButton_Click(object sender, EventArgs e)
         {
-            IFilter gausFilter = new GausFilter();
+            iFilter = new GausFilter();
             Bitmap mainBitmap = (Bitmap)mainPicture.Image;
             Graphics g = mainPicture.CreateGraphics();
             g.Clear(SystemColors.ControlDarkDark);
-            mainPicture.Image = gausFilter.Filter(mainBitmap);
+            mainPicture.Image = iFilter.Filter(mainBitmap);
         }
 
         private void medialFilterButton_Click(object sender, EventArgs e)
         {
-            IFilter medialFilter = new MedialFilter();
+            iFilter = new MedialFilter();
             Bitmap mainBitmap = (Bitmap)mainPicture.Image;
             Graphics g = mainPicture.CreateGraphics();
             g.Clear(SystemColors.ControlDarkDark);
-            mainPicture.Image = medialFilter.Filter(mainBitmap);
+            mainPicture.Image = iFilter.Filter(mainBitmap);
         }
 
         private void unsharpFilterButton_Click(object sender, EventArgs e)
         {
-            IFilter unsharpFilter = new UnsharpFilter();
+            iFilter = new UnsharpFilter();
             Bitmap mainBitmap = (Bitmap)mainPicture.Image;
             Graphics g = mainPicture.CreateGraphics();
             g.Clear(SystemColors.ControlDarkDark);
-            mainPicture.Image = unsharpFilter.Filter(mainBitmap);
+            mainPicture.Image = iFilter.Filter(mainBitmap);
         }
 
         private void robertsFilterButton_Click(object sender, EventArgs e)
         {
-            IFilter robertsFilter = new RobertsFilter();
+            iFilter = new RobertsFilter();
             Bitmap mainBitmap = (Bitmap)mainPicture.Image;
             Graphics g = mainPicture.CreateGraphics();
             g.Clear(SystemColors.ControlDarkDark);
-            mainPicture.Image = robertsFilter.Filter(mainBitmap);
+            mainPicture.Image = iFilter.Filter(mainBitmap);
         }
     }
 }
