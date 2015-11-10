@@ -13,17 +13,17 @@ namespace WhereYouWatch.Filter
 
         public Bitmap Filter(Bitmap originalBitmap)
         {
-            var w = new double[3, 3];
-            w[0, 2] = 0;
-            w[0, 1] = -1;
-            w[0, 0] = 0;
-            w[1, 2] = -1;
-            w[1, 1] = 5;
-            w[1, 0] = -1;
-            w[2, 2] = 0;
-            w[2, 1] = -1;
-            w[2, 0] = 0;
-            return FilterService.LineAlgoritm(originalBitmap, w, SIZE);
+            var baseMatrix = new double[3, 3];
+            baseMatrix[0, 2] = 0;
+            baseMatrix[0, 1] = -1;
+            baseMatrix[0, 0] = 0;
+            baseMatrix[1, 2] = -1;
+            baseMatrix[1, 1] = 5;
+            baseMatrix[1, 0] = -1;
+            baseMatrix[2, 2] = 0;
+            baseMatrix[2, 1] = -1;
+            baseMatrix[2, 0] = 0;
+            return FilterService.LineAlgoritm(originalBitmap, baseMatrix, SIZE);
         }
     }
 }

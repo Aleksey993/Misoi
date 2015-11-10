@@ -9,12 +9,12 @@ namespace WhereYouWatch
 {
     class FilterService
     {
-        public static Bitmap LineAlgoritm (Bitmap originalBitmap, double[,] w, double k)
+        public static Bitmap LineAlgoritm (Bitmap originalBitmap, double[,] baseMatrix, double k)
         {
             Bitmap resultBitmap = new Bitmap(originalBitmap);
             Color color;
-            int xLength=w.GetLength(0)/2;
-            int yLength = w.GetLength(1)/2;
+            int xLength=baseMatrix.GetLength(0)/2;
+            int yLength = baseMatrix.GetLength(1)/2;
             for (int i = xLength; i < originalBitmap.Width - xLength; i++)
             {
                 for (int j = yLength; j < originalBitmap.Height - yLength; j++)
@@ -25,9 +25,9 @@ namespace WhereYouWatch
                         for (int jj = -yLength; jj < yLength + 1; jj++)
                         {
                             color = originalBitmap.GetPixel(i + ii, j + jj);
-                            red += (int)(color.R * w[ii + xLength, jj + yLength]);
-                            green += (int)(color.G * w[ii + xLength, jj + yLength]);
-                            blue += (int)(color.B * w[ii + xLength, jj + yLength]);
+                            red += (int)(color.R * baseMatrix[ii + xLength, jj + yLength]);
+                            green += (int)(color.G * baseMatrix[ii + xLength, jj + yLength]);
+                            blue += (int)(color.B * baseMatrix[ii + xLength, jj + yLength]);
                         }
                     }
                     color = originalBitmap.GetPixel(i, j);
@@ -42,12 +42,12 @@ namespace WhereYouWatch
             return resultBitmap;
         }
 
-        public static Bitmap LineAlgoritm (Bitmap originalBitmap, double[,] w, double k, double a)
+        public static Bitmap LineAlgoritm (Bitmap originalBitmap, double[,] baseMatrix, double k, double a)
         {
             Bitmap resultBitmap = new Bitmap(originalBitmap);
             Color color;
-            int xLength = w.GetLength(0) / 2;
-            int yLength = w.GetLength(1) / 2;
+            int xLength = baseMatrix.GetLength(0) / 2;
+            int yLength = baseMatrix.GetLength(1) / 2;
             for (int i = xLength; i < originalBitmap.Width - xLength; i++)
             {
                 for (int j = yLength; j < originalBitmap.Height - yLength; j++)
@@ -58,9 +58,9 @@ namespace WhereYouWatch
                         for (int jj = -yLength; jj < yLength + 1; jj++)
                         {
                             color = originalBitmap.GetPixel(i + ii, j + jj);
-                            red += (int)(color.R * w[ii + xLength, jj + yLength]);
-                            green += (int)(color.G * w[ii + xLength, jj + yLength]);
-                            blue += (int)(color.B * w[ii + xLength, jj + yLength]);
+                            red += (int)(color.R * baseMatrix[ii + xLength, jj + yLength]);
+                            green += (int)(color.G * baseMatrix[ii + xLength, jj + yLength]);
+                            blue += (int)(color.B * baseMatrix[ii + xLength, jj + yLength]);
                         }
                     }
                     color = originalBitmap.GetPixel(i, j);
