@@ -25,12 +25,8 @@ namespace WhereYouWatch.Detecter
 
         private List<Rectangle> detectedObjects;
         private HaarClassifier classifier;
-
-        private ObjectDetectorSearchMode searchMode = ObjectDetectorSearchMode.NoOverlap;
-        private ObjectDetectorScalingMode scalingMode = ObjectDetectorScalingMode.GreaterToSmaller;
-
-        // TODO: Support ROI
-        //  private Rectangle searchWindow;
+        private ObjectDetectorSearchMode searchMode;
+        private ObjectDetectorScalingMode scalingMode;
 
         private Size minSize = new Size(15, 15);
         private Size maxSize = new Size(500, 500);
@@ -48,25 +44,13 @@ namespace WhereYouWatch.Detecter
         private float[] steps;
 
 
-        public HaarObjectDetector(HaarCascade cascade, int minSize)
-            : this(cascade, minSize, ObjectDetectorSearchMode.NoOverlap)
-        { }
-
-        public HaarObjectDetector(HaarCascade cascade, int minSize, ObjectDetectorSearchMode searchMode)
-            : this(cascade, minSize, searchMode, 1.2f)
-        { }
-
-        public HaarObjectDetector(HaarCascade cascade, int minSize, ObjectDetectorSearchMode searchMode, float scaleFactor)
-            : this(cascade, minSize, searchMode, scaleFactor, ObjectDetectorScalingMode.SmallerToGreater)
-        { }
-
         public HaarObjectDetector(HaarCascade cascade, int minSize, ObjectDetectorSearchMode searchMode, float scaleFactor,
             ObjectDetectorScalingMode scalingMode)
         {
             this.classifier = new HaarClassifier(cascade);
             this.minSize = new Size(minSize, minSize);
             this.searchMode = searchMode;
-            this.ScalingMode = scalingMode;
+            this.scalingMode = scalingMode;
             this.factor = scaleFactor;
             this.detectedObjects = new List<Rectangle>();
 
@@ -77,37 +61,8 @@ namespace WhereYouWatch.Detecter
 
         public bool UseParallelProcessing { get; set; }
 
-        public float ScalingFactor
-        {
-            get { return factor; }
-            set
-            {
-                if (value != factor)
-                {
-                    factor = value;
-                    steps = null;
-                }
-            }
-        }
 
-        public ObjectDetectorSearchMode SearchMode
-        {
-            get { return searchMode; }
-            set { searchMode = value; }
-        }
-
-        public ObjectDetectorScalingMode ScalingMode
-        {
-            get { return scalingMode; }
-            set
-            {
-                if (value != scalingMode)
-                {
-                    scalingMode = value;
-                    steps = null;
-                }
-            }
-        }
+        
 
         public int Steady { get; private set; }
 

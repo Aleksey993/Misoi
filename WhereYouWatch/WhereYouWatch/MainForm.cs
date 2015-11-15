@@ -37,15 +37,12 @@ namespace WhereYouWatch
             videoSource = new VideoCaptureDevice();
 
             Detecter.HaarCascade cascade = new Detecter.FaceHaarCascade();
-            detector = new Detecter.HaarObjectDetector(cascade, 30);
+            detector = new Detecter.HaarObjectDetector(cascade, 30, Detecter.ObjectDetectorSearchMode.NoOverlap, 1.5f, Detecter.ObjectDetectorScalingMode.SmallerToGreater);
 
         }
 
         private void CheckFace_Click(object sender, EventArgs e)
         {
-            detector.SearchMode = Detecter.ObjectDetectorSearchMode.NoOverlap;
-            detector.ScalingMode = Detecter.ObjectDetectorScalingMode.SmallerToGreater;
-            detector.ScalingFactor = 1.5f;
             detector.UseParallelProcessing = true;
             Bitmap mainBitmap = (Bitmap)mainPicture.Image;
 
