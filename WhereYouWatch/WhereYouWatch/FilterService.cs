@@ -32,8 +32,8 @@ namespace WhereYouWatch
                     }
                     color = originalBitmap.GetPixel(i, j);
                     red = (int)(red/k);
-                    green = (int)(green / k); ;
-                    blue = (int)(blue / k); ;
+                    green = (int)(green / k);
+                    blue = (int)(blue / k);
                     color = originalBitmap.GetPixel(i, j);
                     color = Color.FromArgb(color.A, SetColor(red), SetColor(green), SetColor(blue));
                     resultBitmap.SetPixel(i, j, color);
@@ -149,37 +149,37 @@ namespace WhereYouWatch
                 size++;
             }
             var gausList = new List<double>();
-            int u = 0;
+            int sigma = -1;
             for (int i = 0; i <= size / 2 + 1; i++)
             {
-                u += i;
+                sigma += i;
             }
-            u -= 1;
-            for (int i = 0; i <= u; i++)
+
+            for (int i = 0; i <= sigma; i++)
             {
-                gausList.Add(1 / (Math.Sqrt(Math.PI * 2 * u)) * Math.Exp(-((double)(i * i)) / (2 * u)));
+                gausList.Add(1 / (Math.Sqrt(Math.PI * 2 * sigma)) * Math.Exp(-((double)(i * i)) / (2 * sigma)));
             }
-            var w = new double[size, size];
-            int k = 1;
-            int c = size / 2;
-            w[c, c] = gausList.ElementAt(0);
-            for (int i = 1; i <= c; i++)
+            var baseMatrix = new double[size, size];
+            int numberElementGausList = 1;
+            int averageMatrix = size / 2;
+            baseMatrix[averageMatrix, averageMatrix] = gausList.ElementAt(0);
+            for (int i = 1; i <= averageMatrix; i++)
             {
                 for (int j = 0; j <= i; j++)
                 {
-                    w[c + i, c + j] = gausList.ElementAt(k);
-                    w[c + i, c - j] = gausList.ElementAt(k);
-                    w[c - i, c + j] = gausList.ElementAt(k);
-                    w[c - i, c - j] = gausList.ElementAt(k);
-                    w[c + j, c + i] = gausList.ElementAt(k);
-                    w[c - j, c + i] = gausList.ElementAt(k);
-                    w[c + j, c - i] = gausList.ElementAt(k);
-                    w[c - j, c - i] = gausList.ElementAt(k);
-                    k++;
+                    baseMatrix[averageMatrix + i, averageMatrix + j] = gausList.ElementAt(numberElementGausList);
+                    baseMatrix[averageMatrix + i, averageMatrix - j] = gausList.ElementAt(numberElementGausList);
+                    baseMatrix[averageMatrix - i, averageMatrix + j] = gausList.ElementAt(numberElementGausList);
+                    baseMatrix[averageMatrix - i, averageMatrix - j] = gausList.ElementAt(numberElementGausList);
+                    baseMatrix[averageMatrix + j, averageMatrix + i] = gausList.ElementAt(numberElementGausList);
+                    baseMatrix[averageMatrix - j, averageMatrix + i] = gausList.ElementAt(numberElementGausList);
+                    baseMatrix[averageMatrix + j, averageMatrix - i] = gausList.ElementAt(numberElementGausList);
+                    baseMatrix[averageMatrix - j, averageMatrix - i] = gausList.ElementAt(numberElementGausList);
+                    numberElementGausList++;
                 }
             }
 
-            return w;
+            return baseMatrix;
         }
 
         public static double SumGausArray (int size, double [,] gausArray)
