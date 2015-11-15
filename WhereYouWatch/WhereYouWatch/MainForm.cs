@@ -10,11 +10,15 @@ using System.Windows.Forms;
 using AForge.Video;
 using AForge.Video.DirectShow;
 using WhereYouWatch.Filter;
+using System.Diagnostics;
 
 namespace WhereYouWatch
 {
     public partial class MainForm : Form
     {
+        Detecter.HaarObjectDetector detector;
+
+
         FilterInfoCollection videoDevices;
         VideoCaptureDevice videoSource;
         IFilter iFilter;
@@ -31,7 +35,35 @@ namespace WhereYouWatch
         {
             videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
             videoSource = new VideoCaptureDevice();
-         
+
+            Detecter.HaarCascade cascade = new Detecter.FaceHaarCascade();
+            detector = new Detecter.HaarObjectDetector(cascade, 30);
+
+        }
+
+        private void CheckFace_Click(object sender, EventArgs e)
+        {
+            detector.SearchMode = Detecter.ObjectDetectorSearchMode.NoOverlap;
+            detector.ScalingMode = Detecter.ObjectDetectorScalingMode.SmallerToGreater;
+            detector.ScalingFactor = 1.5f;
+            detector.UseParallelProcessing = true;
+            Bitmap mainBitmap = (Bitmap)mainPicture.Image;
+
+            Stopwatch sw = Stopwatch.StartNew();
+
+
+            // Process frame to detect objects
+            Rectangle[] objects = detector.ProcessFrame(mainBitmap);
+
+
+            sw.Stop();
+
+
+            if (objects.Length > 0)
+            {
+                Detecter.RectanglesMarker marker = new Detecter.RectanglesMarker(objects, Color.Fuchsia);
+                mainPicture.Image = marker.Apply(mainBitmap);
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -165,5 +197,7 @@ namespace WhereYouWatch
             g.Clear(SystemColors.ControlDarkDark);
             mainPicture.Image = iFilter.Filter(mainBitmap);
         }
+
+       
     }
 }
