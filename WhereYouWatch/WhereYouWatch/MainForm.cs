@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Windows.Forms;
 using AForge.Video;
 using AForge.Video.DirectShow;
@@ -19,6 +20,7 @@ namespace WhereYouWatch
         VideoCaptureDevice videoSource;
         IFilter iFilter;
         Image newImage;
+        private DetectFace.HaarDetector detector;
 
         public MainForm()
         {
@@ -31,7 +33,11 @@ namespace WhereYouWatch
         {
             videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
             videoSource = new VideoCaptureDevice();
-         
+
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.LoadXml(); //Please put here xml file (DetectFace/haarcascade_frontalface_alt.xml)
+            detector = new DetectFace.HaarDetector(xmlDoc);
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -164,6 +170,28 @@ namespace WhereYouWatch
             Graphics g = mainPicture.CreateGraphics();
             g.Clear(SystemColors.ControlDarkDark);
             mainPicture.Image = iFilter.Filter(mainBitmap);
+        }
+
+        private void Detecting_Click(object sender, EventArgs e)
+        {
+            int maxDetCount = Int32.MaxValue;
+            int minNRectCount = 3;
+            float firstScale = detector.Size2Scale(5);
+            float maxScale = detector.Size2Scale(5);
+            float scaleMult = 6f;
+            float sizeMultForNesRectCon = 7f;
+            float slidingRatio = 3f;
+            Pen pen = new Pen(Brushes.Red, 5);
+            DetectFace.HaarDetector.DetectionParams detectorParameters;
+            detectorParameters = new DetectFace.HaarDetector.DetectionParams(maxDetCount, minNRectCount, firstScale, maxScale, scaleMult, sizeMultForNesRectCon, slidingRatio, pen);
+
+            Bitmap mainBitmap = (Bitmap)mainPicture.Image;
+
+            DateTime start = DateTime.Now;
+            DetectFace.HaarDetector.DResults results = detector.Detect(ref mainBitmap, detectorParameters);
+            TimeSpan Elapsed = DateTime.Now - start;
+
+            mainPicture.Image = mainBitmap;
         }
     }
 }

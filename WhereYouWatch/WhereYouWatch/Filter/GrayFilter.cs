@@ -14,7 +14,7 @@ namespace WhereYouWatch.Filter
             int alpha = 0, red = 0, green = 0, blue = 0, pixelLum = 0;
             Color newPixelColor;
 
-            Bitmap resultBitmap = new Bitmap(originalBitmap.Width, originalBitmap.Height);
+            var resultBitmap = new Bitmap(originalBitmap.Width, originalBitmap.Height);
 
             for (int i = 0; i < originalBitmap.Width; i++)
             {

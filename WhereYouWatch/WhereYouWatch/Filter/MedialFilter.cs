@@ -19,9 +19,9 @@ namespace WhereYouWatch.Filter
             {
                 for (int j = SIZE; j < originalBitmap.Height - SIZE; j++)
                 {
-                    List<int> redList = new List<int>();
-                    List<int> greenList = new List<int>();
-                    List<int> blueList = new List<int>();
+                    var redList = new List<int>();
+                    var greenList = new List<int>();
+                    var blueList = new List<int>();
                     int red = 0, green = 0, blue = 0;
                     for (int ii = -SIZE; ii < SIZE + 1; ii++)
                     {

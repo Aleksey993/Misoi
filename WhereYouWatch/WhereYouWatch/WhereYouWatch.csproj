@@ -62,6 +62,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DetectFace\HearCascade.cs" />
+    <Compile Include="DetectFace\HearDetect.cs" />
+    <Compile Include="DetectFace\Parser.cs" />
     <Compile Include="FilterService.cs" />
     <Compile Include="Filter\ClarityFilter.cs" />
     <Compile Include="Filter\GausFilter.cs" />

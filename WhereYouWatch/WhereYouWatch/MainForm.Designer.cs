@@ -43,6 +43,8 @@
             this.medialFilterButton = new System.Windows.Forms.Button();
             this.unsharpFilterButton = new System.Windows.Forms.Button();
             this.robertsFilterButton = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.Detecting = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.mainPicture)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.realPicture)).BeginInit();
             this.SuspendLayout();
@@ -51,7 +53,7 @@
             // 
             this.MakePhotoButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.MakePhotoButton.Location = new System.Drawing.Point(24, 669);
-            this.MakePhotoButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.MakePhotoButton.Margin = new System.Windows.Forms.Padding(6);
             this.MakePhotoButton.Name = "MakePhotoButton";
             this.MakePhotoButton.Size = new System.Drawing.Size(176, 104);
             this.MakePhotoButton.TabIndex = 3;
@@ -64,7 +66,7 @@
             this.mainPicture.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.mainPicture.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.mainPicture.Location = new System.Drawing.Point(540, 56);
-            this.mainPicture.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.mainPicture.Margin = new System.Windows.Forms.Padding(6);
             this.mainPicture.Name = "mainPicture";
             this.mainPicture.Size = new System.Drawing.Size(512, 481);
             this.mainPicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -75,7 +77,7 @@
             // 
             this.binarizationFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.binarizationFilter.Location = new System.Drawing.Point(212, 669);
-            this.binarizationFilter.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.binarizationFilter.Margin = new System.Windows.Forms.Padding(6);
             this.binarizationFilter.Name = "binarizationFilter";
             this.binarizationFilter.Size = new System.Drawing.Size(218, 104);
             this.binarizationFilter.TabIndex = 5;
@@ -87,7 +89,7 @@
             // 
             this.LHFilterButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.LHFilterButton.Location = new System.Drawing.Point(442, 671);
-            this.LHFilterButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.LHFilterButton.Margin = new System.Windows.Forms.Padding(6);
             this.LHFilterButton.Name = "LHFilterButton";
             this.LHFilterButton.Size = new System.Drawing.Size(234, 102);
             this.LHFilterButton.TabIndex = 6;
@@ -99,7 +101,7 @@
             // 
             this.addBrightButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.addBrightButton.Location = new System.Drawing.Point(900, 673);
-            this.addBrightButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.addBrightButton.Margin = new System.Windows.Forms.Padding(6);
             this.addBrightButton.Name = "addBrightButton";
             this.addBrightButton.Size = new System.Drawing.Size(150, 44);
             this.addBrightButton.TabIndex = 7;
@@ -111,7 +113,7 @@
             // 
             this.removeBrightButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.removeBrightButton.Location = new System.Drawing.Point(900, 729);
-            this.removeBrightButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.removeBrightButton.Margin = new System.Windows.Forms.Padding(6);
             this.removeBrightButton.Name = "removeBrightButton";
             this.removeBrightButton.Size = new System.Drawing.Size(150, 44);
             this.removeBrightButton.TabIndex = 8;
@@ -123,7 +125,7 @@
             // 
             this.lineBoundsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lineBoundsButton.Location = new System.Drawing.Point(688, 673);
-            this.lineBoundsButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.lineBoundsButton.Margin = new System.Windows.Forms.Padding(6);
             this.lineBoundsButton.Name = "lineBoundsButton";
             this.lineBoundsButton.Size = new System.Drawing.Size(200, 100);
             this.lineBoundsButton.TabIndex = 9;
@@ -135,7 +137,7 @@
             // 
             this.realPicture.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.realPicture.Location = new System.Drawing.Point(24, 56);
-            this.realPicture.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.realPicture.Margin = new System.Windows.Forms.Padding(6);
             this.realPicture.Name = "realPicture";
             this.realPicture.Size = new System.Drawing.Size(498, 481);
             this.realPicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -145,7 +147,7 @@
             // clarityButton
             // 
             this.clarityButton.Location = new System.Drawing.Point(24, 548);
-            this.clarityButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.clarityButton.Margin = new System.Windows.Forms.Padding(6);
             this.clarityButton.Name = "clarityButton";
             this.clarityButton.Size = new System.Drawing.Size(176, 98);
             this.clarityButton.TabIndex = 11;
@@ -156,7 +158,7 @@
             // addContrastButton
             // 
             this.addContrastButton.Location = new System.Drawing.Point(900, 550);
-            this.addContrastButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.addContrastButton.Margin = new System.Windows.Forms.Padding(6);
             this.addContrastButton.Name = "addContrastButton";
             this.addContrastButton.Size = new System.Drawing.Size(150, 44);
             this.addContrastButton.TabIndex = 12;
@@ -167,7 +169,7 @@
             // removeContrastButton
             // 
             this.removeContrastButton.Location = new System.Drawing.Point(900, 606);
-            this.removeContrastButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.removeContrastButton.Margin = new System.Windows.Forms.Padding(6);
             this.removeContrastButton.Name = "removeContrastButton";
             this.removeContrastButton.Size = new System.Drawing.Size(150, 44);
             this.removeContrastButton.TabIndex = 13;
@@ -178,7 +180,7 @@
             // gausButton
             // 
             this.gausButton.Location = new System.Drawing.Point(212, 548);
-            this.gausButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.gausButton.Margin = new System.Windows.Forms.Padding(6);
             this.gausButton.Name = "gausButton";
             this.gausButton.Size = new System.Drawing.Size(218, 98);
             this.gausButton.TabIndex = 14;
@@ -189,7 +191,7 @@
             // medialFilterButton
             // 
             this.medialFilterButton.Location = new System.Drawing.Point(442, 550);
-            this.medialFilterButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.medialFilterButton.Margin = new System.Windows.Forms.Padding(6);
             this.medialFilterButton.Name = "medialFilterButton";
             this.medialFilterButton.Size = new System.Drawing.Size(234, 96);
             this.medialFilterButton.TabIndex = 15;
@@ -200,7 +202,7 @@
             // unsharpFilterButton
             // 
             this.unsharpFilterButton.Location = new System.Drawing.Point(690, 548);
-            this.unsharpFilterButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.unsharpFilterButton.Margin = new System.Windows.Forms.Padding(6);
             this.unsharpFilterButton.Name = "unsharpFilterButton";
             this.unsharpFilterButton.Size = new System.Drawing.Size(198, 98);
             this.unsharpFilterButton.TabIndex = 16;
@@ -211,7 +213,7 @@
             // robertsFilterButton
             // 
             this.robertsFilterButton.Location = new System.Drawing.Point(1064, 550);
-            this.robertsFilterButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.robertsFilterButton.Margin = new System.Windows.Forms.Padding(6);
             this.robertsFilterButton.Name = "robertsFilterButton";
             this.robertsFilterButton.Size = new System.Drawing.Size(150, 44);
             this.robertsFilterButton.TabIndex = 17;
@@ -219,11 +221,30 @@
             this.robertsFilterButton.UseVisualStyleBackColor = true;
             this.robertsFilterButton.Click += new System.EventHandler(this.robertsFilterButton_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(0, 0);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 0;
+            // 
+            // Detecting
+            // 
+            this.Detecting.Location = new System.Drawing.Point(1077, 111);
+            this.Detecting.Name = "Detecting";
+            this.Detecting.Size = new System.Drawing.Size(121, 113);
+            this.Detecting.TabIndex = 18;
+            this.Detecting.Text = "Detect Face";
+            this.Detecting.UseVisualStyleBackColor = true;
+            this.Detecting.Click += new System.EventHandler(this.Detecting_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1236, 790);
+            this.Controls.Add(this.Detecting);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.robertsFilterButton);
             this.Controls.Add(this.unsharpFilterButton);
             this.Controls.Add(this.medialFilterButton);
@@ -239,7 +260,7 @@
             this.Controls.Add(this.binarizationFilter);
             this.Controls.Add(this.mainPicture);
             this.Controls.Add(this.MakePhotoButton);
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "MainForm";
             this.Text = "WhereYouWatch";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -265,6 +286,8 @@
         private System.Windows.Forms.Button medialFilterButton;
         private System.Windows.Forms.Button unsharpFilterButton;
         private System.Windows.Forms.Button robertsFilterButton;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button Detecting;
     }
 }
 
