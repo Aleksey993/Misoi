@@ -8,53 +8,18 @@ using System.Xml.Serialization;
 namespace WhereYouWatch.Detecter
 {
     [Serializable]
-    public sealed class HaarFeature : IXmlSerializable, ICloneable
+    public sealed class HaarFeature : ICloneable
     {
 
-        /// <summary>
-        ///   Gets or sets whether this feature is tilted.
-        /// </summary>
-        /// 
         public bool Tilted { get; set; }
 
-        /// <summary>
-        ///   Gets or sets the Haar rectangles for this feature.
-        /// </summary>
-        /// 
         public HaarRectangle[] Rectangles { get; set; }
 
-
-        /// <summary>
-        ///   Constructs a new Haar-like feature.
-        /// </summary>
-        /// 
         public HaarFeature()
         {
             this.Rectangles = new HaarRectangle[2];
         }
 
-        /// <summary>
-        ///   Constructs a new Haar-like feature.
-        /// </summary>
-        /// 
-        public HaarFeature(params HaarRectangle[] rectangles)
-        {
-            this.Rectangles = rectangles;
-        }
-
-        /// <summary>
-        ///   Constructs a new Haar-like feature.
-        /// </summary>
-        /// 
-        public HaarFeature(params int[][] rectangles)
-            : this(false, rectangles)
-        {
-        }
-
-        /// <summary>
-        ///   Constructs a new Haar-like feature.
-        /// </summary>
-        /// 
         public HaarFeature(bool tilted, params int[][] rectangles)
         {
             this.Tilted = tilted;
@@ -63,10 +28,6 @@ namespace WhereYouWatch.Detecter
                 this.Rectangles[i] = new HaarRectangle(rectangles[i]);
         }
 
-        /// <summary>
-        ///   Gets the sum of the areas of the rectangular features in an integral image.
-        /// </summary>
-        /// 
         public double GetSum(IntegralImage2 image, int x, int y)
         {
             double sum = 0.0;
@@ -93,10 +54,6 @@ namespace WhereYouWatch.Detecter
             return sum;
         }
 
-        /// <summary>
-        ///   Sets the scale and weight of a Haar-like rectangular feature container.
-        /// </summary>
-        /// 
         public void SetScaleAndWeight(float scale, float weight)
         {
             // manual loop unfolding
@@ -130,55 +87,6 @@ namespace WhereYouWatch.Detecter
             }
         }
 
-
-        #region IXmlSerializable Members
-
-        XmlSchema IXmlSerializable.GetSchema()
-        {
-            throw new NotSupportedException();
-        }
-
-        void IXmlSerializable.ReadXml(XmlReader reader)
-        {
-            reader.ReadStartElement("feature");
-
-            reader.ReadToFollowing("rects");
-            reader.ReadToFollowing("_");
-
-            var rec = new List<HaarRectangle>();
-            while (reader.Name == "_")
-            {
-                string str = reader.ReadElementContentAsString();
-                rec.Add(HaarRectangle.Parse(str));
-
-                while (reader.Name != "_" && reader.Name != "tilted" &&
-                    reader.NodeType != XmlNodeType.EndElement)
-                    reader.Read();
-            }
-
-            Rectangles = rec.ToArray();
-
-            reader.ReadToFollowing("tilted", reader.BaseURI);
-            Tilted = reader.ReadElementContentAsInt() == 1;
-
-            reader.ReadEndElement();
-        }
-
-        void IXmlSerializable.WriteXml(XmlWriter writer)
-        {
-            throw new NotSupportedException();
-        }
-
-        #endregion
-
-
-
-        /// <summary>
-        /// Creates a new object that is a copy of the current instance.
-        /// </summary>
-        /// <returns>
-        /// A new object that is a copy of this instance.
-        /// </returns>
         public object Clone()
         {
             HaarRectangle[] newRectangles = new HaarRectangle[Rectangles.Length];

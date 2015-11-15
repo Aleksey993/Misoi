@@ -7,92 +7,20 @@ using System.Collections.Concurrent;
 
 namespace WhereYouWatch.Detecter
 {
-   
-
-    /// <summary>
-    ///   Object detector options for the search procedure.
-    /// </summary>
-    /// 
     public enum ObjectDetectorSearchMode
     {
-        /// <summary>
-        ///   Entire image will be scanned.
-        /// </summary>
-        /// 
         Default = 0,
-
-        /// <summary>
-        ///   Only a single object will be retrieved.
-        /// </summary>
-        /// 
         Single,
-
-        /// <summary>
-        ///   If a object has already been detected inside an area,
-        ///   it will not be scanned twice for inner/overlapping objects.
-        /// </summary>
-        /// 
         NoOverlap,
-
-        // TODO: Add mode for maximum/fixed number of faces
     }
 
-    /// <summary>
-    ///   Object detector options for window scaling.
-    /// </summary>
-    /// 
     public enum ObjectDetectorScalingMode
     {
-        /// <summary>
-        ///   Will start with a big search window and
-        ///   gradually scale into smaller ones.
-        /// </summary>
-        /// 
         GreaterToSmaller,
-
-        /// <summary>
-        ///   Will start with small search windows and
-        ///   gradually scale into greater ones.
-        /// </summary>
-        /// 
         SmallerToGreater,
     }
 
-    /// <summary>
-    ///   Viola-Jones Object Detector based on Haar-like features.
-    /// </summary>
-    /// <remarks>
-    /// 
-    /// <para>
-    ///   The Viola-Jones object detection framework is the first object detection framework
-    ///   to provide competitive object detection rates in real-time proposed in 2001 by Paul
-    ///   Viola and Michael Jones. Although it can be trained to detect a variety of object
-    ///   classes, it was motivated primarily by the problem of face detection.</para>
-    ///   
-    /// <para>
-    ///   The implementation of this code has used Viola and Jones' original publication, the
-    ///   OpenCV Library and the Marilena Project as reference. OpenCV is released under a BSD
-    ///   license, it is free for both academic and commercial use. Please be aware that some
-    ///   particular versions of the Haar object detection framework are patented by Viola and
-    ///   Jones and may be subject to restrictions for use in commercial applications. The code
-    ///   has been implemented with full support for tilted Haar features from the ground up.</para>
-    ///   
-    ///  <para>
-    ///     References:
-    ///     <list type="bullet">
-    ///       <item><description>
-    ///         <a href="http://www.cs.utexas.edu/~grauman/courses/spring2007/395T/papers/viola_cvpr2001.pdf">
-    ///         Viola, P. and Jones, M. (2001). Rapid Object Detection using a Boosted Cascade
-    ///         of Simple Features.</a></description></item>
-    ///       <item><description>
-    ///         <a href="http://en.wikipedia.org/wiki/Viola-Jones_object_detection_framework">
-    ///         http://en.wikipedia.org/wiki/Viola-Jones_object_detection_framework</a>
-    ///       </description></item>
-    ///     </list>
-    ///   </para>
-    /// </remarks>
-    /// 
-    public class HaarObjectDetector : IObjectDetector
+    public class HaarObjectDetector
     {
 
         private List<Rectangle> detectedObjects;
@@ -120,91 +48,18 @@ namespace WhereYouWatch.Detecter
         private float[] steps;
 
 
-        #region Constructors
-
-        /// <summary>
-        ///   Constructs a new Haar object detector.
-        /// </summary>
-        /// <param name="cascade">
-        ///   The <see cref="HaarCascade"/> to use in the detector's classifier.
-        ///   For the default face cascade, please take a look on
-        ///   <see cref="Cascades.FaceHaarCascade"/>.
-        /// </param>
-        /// 
-        public HaarObjectDetector(HaarCascade cascade)
-            : this(cascade, 15)
-        { }
-
-        /// <summary>
-        ///   Constructs a new Haar object detector.
-        /// </summary>
-        /// <param name="cascade">
-        ///   The <see cref="HaarCascade"/> to use in the detector's classifier.
-        ///   For the default face cascade, please take a look on
-        ///   <see cref="Cascades.FaceHaarCascade"/>.
-        /// </param>
-        /// <param name="minSize">Minimum window size to consider when searching
-        /// objects. Default value is <c>15</c>.</param>
-        /// 
         public HaarObjectDetector(HaarCascade cascade, int minSize)
             : this(cascade, minSize, ObjectDetectorSearchMode.NoOverlap)
         { }
 
-        /// <summary>
-        ///   Constructs a new Haar object detector.
-        /// </summary>
-        /// <param name="cascade">
-        ///   The <see cref="HaarCascade"/> to use in the detector's classifier.
-        ///   For the default face cascade, please take a look on
-        ///   <see cref="Cascades.FaceHaarCascade"/>.
-        /// </param>
-        /// <param name="minSize">Minimum window size to consider when searching
-        /// objects. Default value is <c>15</c>.</param>
-        /// <param name="searchMode">The <see cref="ObjectDetectorSearchMode"/> to use
-        /// during search. Please see documentation of <see cref="ObjectDetectorSearchMode"/>
-        /// for details. Default value is <see cref="ObjectDetectorSearchMode.NoOverlap"/></param>
-        /// 
         public HaarObjectDetector(HaarCascade cascade, int minSize, ObjectDetectorSearchMode searchMode)
             : this(cascade, minSize, searchMode, 1.2f)
         { }
 
-        /// <summary>
-        ///   Constructs a new Haar object detector.
-        /// </summary>
-        /// <param name="cascade">
-        ///   The <see cref="HaarCascade"/> to use in the detector's classifier.
-        ///   For the default face cascade, please take a look on
-        ///   <see cref="Cascades.FaceHaarCascade"/>.
-        /// </param>
-        /// <param name="minSize">Minimum window size to consider when searching
-        /// objects. Default value is <c>15</c>.</param>
-        /// <param name="searchMode">The <see cref="ObjectDetectorSearchMode"/> to use
-        /// during search. Please see documentation of <see cref="ObjectDetectorSearchMode"/>
-        /// for details. Default value is <see cref="ObjectDetectorSearchMode.NoOverlap"/></param>
-        /// <param name="scaleFactor">The re-scaling factor to use when re-scaling the window during search.</param>
-        /// 
         public HaarObjectDetector(HaarCascade cascade, int minSize, ObjectDetectorSearchMode searchMode, float scaleFactor)
             : this(cascade, minSize, searchMode, scaleFactor, ObjectDetectorScalingMode.SmallerToGreater)
         { }
 
-        /// <summary>
-        ///   Constructs a new Haar object detector.
-        /// </summary>
-        /// <param name="cascade">
-        ///   The <see cref="HaarCascade"/> to use in the detector's classifier.
-        ///   For the default face cascade, please take a look on
-        ///   <see cref="Cascades.FaceHaarCascade"/>.
-        /// </param>
-        /// <param name="minSize">Minimum window size to consider when searching
-        /// objects. Default value is <c>15</c>.</param>
-        /// <param name="searchMode">The <see cref="ObjectDetectorSearchMode"/> to use
-        /// during search. Please see documentation of <see cref="ObjectDetectorSearchMode"/>
-        /// for details. Default is <see cref="ObjectDetectorSearchMode.NoOverlap"/>.</param>
-        /// <param name="scaleFactor">The scaling factor to rescale the window
-        /// during search. Default value is <c>1.2f</c>.</param>
-        /// <param name="scalingMode">The <see cref="ObjectDetectorScalingMode"/> to use
-        /// when re-scaling the search window during search. Default is <see cref="ObjectDetectorScalingMode.SmallerToGreater"/>.</param>
-        /// 
         public HaarObjectDetector(HaarCascade cascade, int minSize, ObjectDetectorSearchMode searchMode, float scaleFactor,
             ObjectDetectorScalingMode scalingMode)
         {
@@ -218,53 +73,10 @@ namespace WhereYouWatch.Detecter
             this.baseWidth = cascade.Width;
             this.baseHeight = cascade.Height;
         }
-        #endregion
 
-        #region Properties
 
-        /// <summary>
-        ///   Gets or sets a value indicating whether this <see cref="HaarObjectDetector"/>
-        ///   should scan the image using multiple threads.
-        /// </summary>
-        /// 
-        /// <value><c>true</c> to use multiple threads; otherwise, <c>false</c>.</value>
-        /// 
         public bool UseParallelProcessing { get; set; }
 
-        /// <summary>
-        ///   Minimum window size to consider when searching objects.
-        /// </summary>
-        /// 
-        public Size MinSize
-        {
-            get { return minSize; }
-            set { minSize = value; }
-        }
-
-        /// <summary>
-        ///   Maximum window size to consider when searching objects.
-        /// </summary>
-        /// 
-        public Size MaxSize
-        {
-            get { return maxSize; }
-            set { maxSize = value; }
-        }
-
-        /// <summary>
-        ///   Gets or sets the color channel to use when processing color images. 
-        /// </summary>
-        /// 
-        public int Channel
-        {
-            get { return channel; }
-            set { channel = value; }
-        }
-
-        /// <summary>
-        ///   Gets or sets the scaling factor to rescale the window during search.
-        /// </summary>
-        /// 
         public float ScalingFactor
         {
             get { return factor; }
@@ -278,20 +90,12 @@ namespace WhereYouWatch.Detecter
             }
         }
 
-        /// <summary>
-        ///   Gets or sets the desired searching method.
-        /// </summary>
-        /// 
         public ObjectDetectorSearchMode SearchMode
         {
             get { return searchMode; }
             set { searchMode = value; }
         }
 
-        /// <summary>
-        ///   Gets or sets the desired scaling method.
-        /// </summary>
-        /// 
         public ObjectDetectorScalingMode ScalingMode
         {
             get { return scalingMode; }
@@ -305,49 +109,13 @@ namespace WhereYouWatch.Detecter
             }
         }
 
-        /// <summary>
-        ///   Gets the detected objects bounding boxes.
-        /// </summary>
-        /// 
-        public Rectangle[] DetectedObjects
-        {
-            get { return detectedObjects.ToArray(); }
-        }
-
-        /// <summary>
-        ///   Gets the internal Cascade Classifier used by this detector.
-        /// </summary>
-        public HaarClassifier Classifier
-        {
-            get { return classifier; }
-        }
-
-        /// <summary>
-        ///   Gets how many frames the object has
-        ///   been detected in a steady position.
-        /// </summary>
-        /// <value>
-        ///   The number of frames the detected object
-        ///   has been in a steady position.</value>
-        ///   
         public int Steady { get; private set; }
 
-        #endregion
-
-
-        /// <summary>
-        ///   Performs object detection on the given frame.
-        /// </summary>
-        /// 
         public Rectangle[] ProcessFrame(Bitmap frame)
         {
             return ProcessFrame(UnmanagedImage.FromManagedImage(frame));
         }
 
-        /// <summary>
-        ///   Performs object detection on the given frame.
-        /// </summary>
-        /// 
         public Rectangle[] ProcessFrame(UnmanagedImage image)
         {
             // Creates an integral image representation of the frame

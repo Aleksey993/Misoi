@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace WhereYouWatch
 {
-    class FilterService
+    public static class FilterService
     {
         public static Bitmap LineAlgoritm (Bitmap originalBitmap, double[,] baseMatrix, double k)
         {
@@ -193,6 +193,15 @@ namespace WhereYouWatch
                 }
             }
             return sum;
+        }
+
+
+        public static bool IsEqual(this Rectangle objA, Rectangle objB, int threshold)
+        {
+            return (Math.Abs(objA.X - objB.X) < threshold) &&
+                   (Math.Abs(objA.Y - objB.Y) < threshold) &&
+                   (Math.Abs(objA.Width - objB.Width) < threshold) &&
+                   (Math.Abs(objA.Height - objB.Height) < threshold);
         }
     }
 }

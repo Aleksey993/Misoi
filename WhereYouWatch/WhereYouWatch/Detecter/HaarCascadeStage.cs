@@ -8,63 +8,29 @@ namespace WhereYouWatch.Detecter
     [XmlRoot("_")]
     public class HaarCascadeStage : ICloneable
     {
-        /// <summary>
-        ///   Gets or sets the feature trees and its respective
-        ///   feature tree nodes which compose this stage.
-        /// </summary>
         [XmlArray("trees")]
         [XmlArrayItem("_")]
         [XmlArrayItem("_", NestingLevel = 1)]
         public HaarFeatureNode[][] Trees { get; set; }
 
-        /// <summary>
-        ///   Gets or sets the threshold associated with this stage,
-        ///   i.e. the minimum value the classifiers should output
-        ///   to decide if the image contains the object or not.
-        /// </summary>
         [XmlElement("stage_threshold")]
         public double Threshold { get; set; }
 
-        /// <summary>
-        ///   Gets the index of the parent stage from this stage.
-        /// </summary>
         [XmlElement("parent")]
         public int ParentIndex { get; set; }
 
-        /// <summary>
-        ///   Gets the index of the next stage from this stage.
-        /// </summary>
         [XmlElement("next")]
         public int NextIndex { get; set; }
 
-        /// <summary>
-        ///   Constructs a new Haar Cascade Stage.
-        /// </summary>
         public HaarCascadeStage()
         {
         }
 
-        /// <summary>
-        ///   Constructs a new Haar Cascade Stage.
-        /// </summary>
         public HaarCascadeStage(double threshold)
         {
             this.Threshold = threshold;
         }
 
-        /// <summary>
-        ///   Constructs a new Haar Cascade Stage.
-        /// </summary>
-        public HaarCascadeStage(double threshold, int parentIndex, int nextIndex)
-        {
-            this.Threshold = threshold;
-            this.ParentIndex = parentIndex;
-            this.NextIndex = nextIndex;
-        }
-
-        /// <summary>
-        ///   Classifies an image as having the searched object or not.
-        /// </summary>
         public bool Classify(IntegralImage2 image, int x, int y, double factor)
         {
             double value = 0;
@@ -116,13 +82,6 @@ namespace WhereYouWatch.Detecter
             }
         }
 
-
-        /// <summary>
-        /// Creates a new object that is a copy of the current instance.
-        /// </summary>
-        /// <returns>
-        /// A new object that is a copy of this instance.
-        /// </returns>
         public object Clone()
         {
             HaarFeatureNode[][] newTrees = new HaarFeatureNode[Trees.Length][];
@@ -146,21 +105,5 @@ namespace WhereYouWatch.Detecter
             return r;
         }
 
-    }
-
-    /// <summary>
-    ///   Haar Cascade Serialization Root. This class is used
-    ///   only for XML serialization/deserialization.
-    /// </summary>
-    /// 
-    [Serializable]
-    [XmlRoot(Namespace = "", IsNullable = false, ElementName = "stages")]
-    public class HaarCascadeSerializationObject
-    {
-        /// <summary>
-        ///   The stages retrieved after deserialization.
-        /// </summary>
-        [XmlElement("_")]
-        public Detecter.HaarCascadeStage[] Stages { get; set; }
     }
 }

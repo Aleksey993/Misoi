@@ -74,16 +74,13 @@
     <Compile Include="Detecter\FaceHaarCascade.cs" />
     <Compile Include="Detecter\HaarCascade.cs" />
     <Compile Include="Detecter\HaarCascadeStage.cs" />
-    <Compile Include="Detecter\HaarCascadeWriter.cs" />
     <Compile Include="Detecter\HaarClassifier.cs" />
     <Compile Include="Detecter\HaarFeature.cs" />
     <Compile Include="Detecter\HaarFeatureNode.cs" />
     <Compile Include="Detecter\HaarObjectDetector.cs" />
     <Compile Include="Detecter\HaarRectangle.cs" />
     <Compile Include="Detecter\IntegralImage2.cs" />
-    <Compile Include="Detecter\IObjectDetector.cs" />
     <Compile Include="Detecter\RectanglesMarker.cs" />
-    <Compile Include="Detecter\Tools.cs" />
     <Compile Include="FilterService.cs" />
     <Compile Include="Filter\ClarityFilter.cs" />
     <Compile Include="Filter\GausFilter.cs" />

@@ -7,11 +7,6 @@ namespace WhereYouWatch.Detecter
     public class FaceHaarCascade : HaarCascade
     {
 
-        /// <summary>
-        ///   Hardcoded partial transcription of <i>haarcascade_frontalface_alt.xml</i>
-        ///   based on code by Mario Klingemann.
-        /// </summary>
-        /// 
         [SuppressMessage("Microsoft.Maintainability", "CA1505:AvoidUnmaintainableCode")]
         public FaceHaarCascade()
             : base(20, 20)

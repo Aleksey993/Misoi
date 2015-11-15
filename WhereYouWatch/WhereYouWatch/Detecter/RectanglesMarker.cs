@@ -17,25 +17,6 @@
         private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
 
-        /// <summary>
-        ///   Color used to mark pairs.
-        /// </summary>
-        /// 
-        public Color MarkerColor
-        {
-            get { return markerColor; }
-            set { markerColor = value; }
-        }
-
-        /// <summary>
-        ///   The set of rectangles.
-        /// </summary>
-        /// 
-        public IEnumerable<Rectangle> Rectangles
-        {
-            get { return rectangles; }
-            set { rectangles = value; }
-        }
 
 
         /// <summary>
@@ -47,47 +28,6 @@
             get { return formatTranslations; }
         }
 
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="RectanglesMarker"/> class.
-        /// </summary>
-        /// 
-        /// <param name="markerColor">The color to use to drawn the rectangles.</param>
-        /// 
-        public RectanglesMarker(Color markerColor)
-            : this(null, markerColor)
-        {
-        }
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="RectanglesMarker"/> class.
-        /// </summary>
-        /// 
-        /// <param name="rectangles">Set of rectangles to be drawn.</param>
-        /// 
-        public RectanglesMarker(params Rectangle[] rectangles)
-            : this(rectangles, Color.White)
-        {
-        }
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="RectanglesMarker"/> class.
-        /// </summary>
-        /// 
-        /// <param name="rectangles">Set of rectangles to be drawn.</param>
-        /// 
-        public RectanglesMarker(IEnumerable<Rectangle> rectangles)
-            : this(rectangles, Color.White)
-        {
-        }
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="RectanglesMarker"/> class.
-        /// </summary>
-        /// 
-        /// <param name="rectangles">Set of rectangles to be drawn.</param>
-        /// <param name="markerColor">The color to use to drawn the rectangles.</param>
-        /// 
         public RectanglesMarker(IEnumerable<Rectangle> rectangles, Color markerColor)
         {
             this.rectangles = rectangles;

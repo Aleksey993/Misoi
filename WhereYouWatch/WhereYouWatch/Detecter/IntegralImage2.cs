@@ -30,56 +30,16 @@ namespace WhereYouWatch.Detecter
         private int tWidth;
         private int tHeight;
 
-
-        /// <summary>
-        ///   Gets the image's width.
-        /// </summary>
-        /// 
         public int Width
         {
             get { return width; }
         }
 
-        /// <summary>
-        ///   Gets the image's height.
-        /// </summary>
-        /// 
         public int Height
         {
             get { return height; }
         }
 
-        /// <summary>
-        ///   Gets the Integral Image for values' sum.
-        /// </summary>
-        /// 
-        public int[,] Image
-        {
-            get { return nSumImage; }
-        }
-
-        /// <summary>
-        ///   Gets the Integral Image for values' squared sum.
-        /// </summary>
-        /// 
-        public int[,] Squared
-        {
-            get { return sSumImage; }
-        }
-
-        /// <summary>
-        ///   Gets the Integral Image for tilted values' sum.
-        /// </summary>
-        /// 
-        public int[,] Rotated
-        {
-            get { return tSumImage; }
-        }
-
-        /// <summary>
-        ///   Constructs a new Integral image of the given size.
-        /// </summary>
-        /// 
         protected IntegralImage2(int width, int height, bool computeTilted)
         {
             this.width = width;
@@ -107,75 +67,6 @@ namespace WhereYouWatch.Detecter
             }
         }
 
-        /// <summary>
-        ///   Constructs a new Integral image from a Bitmap image.
-        /// </summary>
-        /// 
-        public static IntegralImage2 FromBitmap(Bitmap image, int channel)
-        {
-            return FromBitmap(image, channel, false);
-        }
-
-        /// <summary>
-        ///   Constructs a new Integral image from a Bitmap image.
-        /// </summary>
-        /// 
-        public static IntegralImage2 FromBitmap(Bitmap image, int channel, bool computeTilted)
-        {
-            // check image format
-            if (!(image.PixelFormat == PixelFormat.Format8bppIndexed ||
-                image.PixelFormat == PixelFormat.Format24bppRgb ||
-                image.PixelFormat == PixelFormat.Format32bppArgb))
-            {
-                throw new UnsupportedImageFormatException("Only grayscale and 24 bpp RGB images are supported.");
-            }
-
-
-            // lock source image
-            BitmapData imageData = image.LockBits(
-                new Rectangle(0, 0, image.Width, image.Height),
-                ImageLockMode.ReadOnly, image.PixelFormat);
-
-            // process the image
-            IntegralImage2 im = FromBitmap(imageData, channel, computeTilted);
-
-            // unlock image
-            image.UnlockBits(imageData);
-
-            return im;
-        }
-
-        /// <summary>
-        ///   Constructs a new Integral image from a BitmapData image.
-        /// </summary>
-        /// 
-        public static IntegralImage2 FromBitmap(BitmapData imageData, int channel)
-        {
-            return FromBitmap(new UnmanagedImage(imageData), channel);
-        }
-
-        /// <summary>
-        ///   Constructs a new Integral image from a BitmapData image.
-        /// </summary>
-        /// 
-        public static IntegralImage2 FromBitmap(BitmapData imageData, int channel, bool computeTilted)
-        {
-            return FromBitmap(new UnmanagedImage(imageData), channel, computeTilted);
-        }
-
-        /// <summary>
-        ///   Constructs a new Integral image from an unmanaged image.
-        /// </summary>
-        /// 
-        public static IntegralImage2 FromBitmap(UnmanagedImage image, int channel)
-        {
-            return FromBitmap(image, channel, false);
-        }
-
-        /// <summary>
-        ///   Constructs a new Integral image from an unmanaged image.
-        /// </summary>
-        /// 
         public static IntegralImage2 FromBitmap(UnmanagedImage image, int channel, bool computeTilted
             /*, TODO: Rectangle roi*/)
         {
@@ -305,10 +196,6 @@ namespace WhereYouWatch.Detecter
             return im;
         }
 
-        /// <summary>
-        ///   Gets the sum of the pixels in a rectangle of the Integral image.
-        /// </summary>
-        /// 
         public int GetSum(int x, int y, int width, int height)
         {
             int a = nWidth * (y) + (x);
@@ -319,10 +206,6 @@ namespace WhereYouWatch.Detecter
             return nSum[a] + nSum[b] - nSum[c] - nSum[d];
         }
 
-        /// <summary>
-        ///   Gets the sum of the squared pixels in a rectangle of the Integral image.
-        /// </summary>
-        /// 
         public int GetSum2(int x, int y, int width, int height)
         {
             int a = nWidth * (y) + (x);
@@ -333,11 +216,6 @@ namespace WhereYouWatch.Detecter
             return sSum[a] + sSum[b] - sSum[c] - sSum[d];
         }
 
-
-        /// <summary>
-        ///   Gets the sum of the pixels in a tilted rectangle of the Integral image.
-        /// </summary>
-        /// 
         public int GetSumT(int x, int y, int width, int height)
         {
             int a = tWidth * (y + width) + (x + width + 1);
@@ -349,38 +227,17 @@ namespace WhereYouWatch.Detecter
         }
 
 
-
-        #region IDisposable Members
-
-        /// <summary>
-        ///   Performs application-defined tasks associated with freeing,
-        ///   releasing, or resetting unmanaged resources.
-        /// </summary>
-        /// 
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>
-        ///   Releases unmanaged resources and performs other cleanup operations 
-        ///   before the <see cref="IntegralImage2"/> is reclaimed by garbage collection.
-        /// </summary>
-        /// 
         ~IntegralImage2()
         {
             Dispose(false);
         }
 
-        /// <summary>
-        ///   Releases unmanaged and - optionally - managed resources
-        /// </summary>
-        /// 
-        /// <param name="disposing"><c>true</c> to release both managed 
-        /// and unmanaged resources; <c>false</c> to release only unmanaged
-        /// resources.</param>
-        /// 
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -406,8 +263,6 @@ namespace WhereYouWatch.Detecter
                 tSum = null;
             }
         }
-
-        #endregion
 
     }
 }
