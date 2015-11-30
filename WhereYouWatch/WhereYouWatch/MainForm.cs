@@ -19,6 +19,8 @@ namespace WhereYouWatch
         VideoCaptureDevice videoSource;
         IFilter iFilter;
         Image newImage;
+        private HaarDetector faceDetector = new HaarDetector("haarcascade_frontalface_alt.xml");
+        private HaarDetector eyeDetector = new HaarDetector("haarcascade_eye.xml");
 
         public MainForm()
         {
@@ -164,6 +166,93 @@ namespace WhereYouWatch
             Graphics g = mainPicture.CreateGraphics();
             g.Clear(SystemColors.ControlDarkDark);
             mainPicture.Image = iFilter.Filter(mainBitmap);
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            HaarDetector.DetectionParams faceParam = new HaarDetector.DetectionParams(10, 0, 3, 480, 1.01f, 0.3f, 0.2f, new Pen(Color.Red));
+            HaarDetector.DetectionParams eyeParam = new HaarDetector.DetectionParams(2, 1, 3, 480, 1.1f, 0.3f, 0.2f, new Pen(Color.Blue));
+            Bitmap b = ((Bitmap)mainPicture.Image);
+            HaarDetector.DResults res = faceDetector.Detect(b, faceParam);
+            if (res.DetectedOLocs != null)
+            {
+                foreach (Rectangle rec in res.DetectedOLocs)
+                {
+                    Bitmap eyeBitmap = b.Clone(rec, b.PixelFormat);
+                    HaarDetector.DResults resEye = eyeDetector.Detect(eyeBitmap, eyeParam);
+                    if (resEye.DetectedOLocs != null)
+                    {
+                        foreach (Rectangle recEye in resEye.DetectedOLocs)
+                        {
+                            if (recEye.X == 0 && recEye.Y == 0 && recEye.Width == 0 && recEye.Height == 0)
+                            {
+                                break;
+                            }
+                            Point p = detectEyeCenter(eyeBitmap.Clone(recEye, eyeBitmap.PixelFormat));
+                            Graphics G = Graphics.FromImage(b);
+                            int startXEye = rec.X + recEye.X;
+                            int startYEye = rec.Y + recEye.Y;
+                            G.DrawRectangle(new Pen(Color.Blue), new Rectangle(startXEye, startYEye, recEye.Width, recEye.Height));
+                            G.DrawLine(new Pen(Color.Green), startXEye + p.X - 5, startYEye + p.Y, startXEye + p.X + 5, startYEye + p.Y);
+                            G.DrawLine(new Pen(Color.Green), startXEye + p.X, startYEye + p.Y - 5, startXEye + p.X, startYEye + p.Y + 5);
+                            G.Dispose();
+                        }
+                    }
+                }
+            }
+            //res = eyeDetector.Detect(b, eyeParam);
+            //int x=res.DetectedOLocs[0].X;
+            //x = res.DetectedOLocs[0].Y;
+            //x = res.DetectedOLocs[0].Width;
+            //x = res.DetectedOLocs[0].Height;
+            mainPicture.Image = b;
+            int f = 1;
+            f++;
+        }
+
+        private Point detectEyeCenter(Bitmap image)
+        {
+            image = new OtsuBinarizationFilter().Filter(image);
+            int sum = Int32.MaxValue;
+            int x = 0;
+            for (int i = 1; i < image.Width; i++)
+            {
+                int rowsum = 0;
+                for (int j = 1; j < image.Height; j++)
+                {
+                    rowsum += image.GetPixel(i, j).B;
+                }
+                if (sum > rowsum)
+                {
+                    sum = rowsum;
+                    x = i;
+                }
+            }
+            int y = 0;
+            int size = 0;
+            int tmpsize = 0;
+            for (int i = 1; i < image.Height; i++)
+            {
+                if (image.GetPixel(x, i).B == 0)
+                {
+                    tmpsize++;
+                }
+                else
+                {
+                    if (size < tmpsize)
+                    {
+                        size = tmpsize;
+                        tmpsize = 0;
+                        y = i - size;
+                    }
+                }
+            }
+            if (tmpsize > size)
+            {
+                size = tmpsize;
+            }
+
+            return new Point(x, y + size / 2);
         }
     }
 }
