@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using AForge.Video;
 using AForge.Video.DirectShow;
-
-
+using WhereYouWatch.Filter;
 
 namespace WhereYouWatch
 {
@@ -18,11 +17,8 @@ namespace WhereYouWatch
     {
         FilterInfoCollection videoDevices;
         VideoCaptureDevice videoSource;
+        IFilter iFilter;
         Image newImage;
-
-        private HaarDetector faceDetector = new HaarDetector("F:\\VisualRepo2\\WhereYouWatch\\WhereYouWatch\\WhereYouWatch\\haarcascade_frontalface_alt.xml");
-        private HaarDetector eyeDetector = new HaarDetector("F:\\VisualRepo2\\WhereYouWatch\\WhereYouWatch\\WhereYouWatch\\haarcascade_eye.xml");
-
 
         public MainForm()
         {
@@ -55,17 +51,18 @@ namespace WhereYouWatch
             realPicture.Image = newImage;
         }
 
-        private void button1_Click_1(object sender, EventArgs e)  // кнопка "Бинаризировать"
+        private void binarizationFilter_Click(object sender, EventArgs e)
         {
+            iFilter = new OtsuBinarizationFilter();
+            
             try
             {
                 if (!(mainPicture.Image.GetType() == typeof(Bitmap))) // мб эта проверка и не нужна?  а ещё нужна проверка на то, есть ли фотка вообще
                 {
                     throw new InvalidCastException("Ошибка преобразования типа файла к Bitmap-у");
                 }
-                Bitmap grayscale = Binarization.ConverToGrayBitmap((Bitmap)mainPicture.Image);  // переводим изображение в серые тона
-                // бинаризируем изображение по методу Отсу, используя изображение, переведённые в серые тона и 
-                mainPicture.Image = Binarization.OtsuBinarize(grayscale);  // вывод на "дисплей" бинаризированного изображения            
+                // бинаризируем изображение по методу Отсу, используя изображение, переведённые в серые тона.
+                mainPicture.Image = iFilter.Filter((Bitmap)mainPicture.Image);         
             }
             catch (Exception ex)
             {
@@ -76,10 +73,11 @@ namespace WhereYouWatch
 
         private void LHFilterButton_Click(object sender, EventArgs e)
         {
+            iFilter = new LHFilter();
             Bitmap mainBitmap = (Bitmap)mainPicture.Image;
             Graphics g = mainPicture.CreateGraphics();
             g.Clear(SystemColors.ControlDarkDark);
-            mainPicture.Image = FilterService.LHFilter(mainBitmap);
+            mainPicture.Image = iFilter.Filter(mainBitmap);
         }
 
         private void addBrightButton_Click(object sender, EventArgs e)
@@ -87,7 +85,7 @@ namespace WhereYouWatch
             Bitmap mainBitmap = (Bitmap)mainPicture.Image;
             Graphics g = mainPicture.CreateGraphics();
             g.Clear(SystemColors.ControlDarkDark);
-            mainPicture.Image = FilterService.addBright(mainBitmap, 5);
+            mainPicture.Image = FilterService.AddBright(mainBitmap, 5);
         }
 
         private void removeBrightButton_Click(object sender, EventArgs e)
@@ -95,23 +93,25 @@ namespace WhereYouWatch
             Bitmap mainBitmap = (Bitmap)mainPicture.Image;
             Graphics g = mainPicture.CreateGraphics();
             g.Clear(SystemColors.ControlDarkDark);
-            mainPicture.Image = FilterService.addBright(mainBitmap, -5);
+            mainPicture.Image = FilterService.AddBright(mainBitmap, -5);
         }
 
         private void lineBoundsButton_Click(object sender, EventArgs e)
         {
+            iFilter = new LineBoundFilter();
             Bitmap mainBitmap = (Bitmap)mainPicture.Image;
             Graphics g = mainPicture.CreateGraphics();
             g.Clear(SystemColors.ControlDarkDark);
-            mainPicture.Image = FilterService.lineBounds(mainBitmap);
+            mainPicture.Image = iFilter.Filter(mainBitmap);
         }
 
         private void clarityButton_Click(object sender, EventArgs e)
         {
+            iFilter = new ClarityFilter();
             Bitmap mainBitmap = (Bitmap)mainPicture.Image;
             Graphics g = mainPicture.CreateGraphics();
             g.Clear(SystemColors.ControlDarkDark);
-            mainPicture.Image = FilterService.clarity(mainBitmap);
+            mainPicture.Image = iFilter.Filter(mainBitmap);
         }
 
         private void addContrastButton_Click(object sender, EventArgs e)
@@ -119,7 +119,7 @@ namespace WhereYouWatch
             Bitmap mainBitmap = (Bitmap)mainPicture.Image;
             Graphics g = mainPicture.CreateGraphics();
             g.Clear(SystemColors.ControlDarkDark);
-            mainPicture.Image = FilterService.addContrast(mainBitmap,1.5);
+            mainPicture.Image = FilterService.AddContrast(mainBitmap,1.5);
         }
 
         private void removeContrastButton_Click(object sender, EventArgs e)
@@ -127,138 +127,43 @@ namespace WhereYouWatch
             Bitmap mainBitmap = (Bitmap)mainPicture.Image;
             Graphics g = mainPicture.CreateGraphics();
             g.Clear(SystemColors.ControlDarkDark);
-            mainPicture.Image = FilterService.addContrast(mainBitmap, 0.66);
+            mainPicture.Image = FilterService.AddContrast(mainBitmap, 0.66);
         }
 
         private void gausButton_Click(object sender, EventArgs e)
         {
+            iFilter = new GausFilter();
             Bitmap mainBitmap = (Bitmap)mainPicture.Image;
             Graphics g = mainPicture.CreateGraphics();
             g.Clear(SystemColors.ControlDarkDark);
-            mainPicture.Image = FilterService.gaus(mainBitmap,7);
+            mainPicture.Image = iFilter.Filter(mainBitmap);
         }
 
         private void medialFilterButton_Click(object sender, EventArgs e)
         {
+            iFilter = new MedialFilter();
             Bitmap mainBitmap = (Bitmap)mainPicture.Image;
             Graphics g = mainPicture.CreateGraphics();
             g.Clear(SystemColors.ControlDarkDark);
-            mainPicture.Image = FilterService.medial(mainBitmap, 5);
+            mainPicture.Image = iFilter.Filter(mainBitmap);
         }
 
         private void unsharpFilterButton_Click(object sender, EventArgs e)
         {
+            iFilter = new UnsharpFilter();
             Bitmap mainBitmap = (Bitmap)mainPicture.Image;
             Graphics g = mainPicture.CreateGraphics();
             g.Clear(SystemColors.ControlDarkDark);
-            mainPicture.Image = FilterService.unsharp(mainBitmap, 7);
+            mainPicture.Image = iFilter.Filter(mainBitmap);
         }
 
         private void robertsFilterButton_Click(object sender, EventArgs e)
         {
-            //Bitmap mainBitmap = (Bitmap)mainPicture.Image;
-            //Graphics g = mainPicture.CreateGraphics();
-            //g.Clear(SystemColors.ControlDarkDark);
-            //mainPicture.Image = FilterService.roberts(mainBitmap);
-            //HaarCascade cascade = new HaarCascade("F:\\VisualRepo2\\WhereYouWatch\\WhereYouWatch\\WhereYouWatch\\haarcascade_frontalface_alt.xml");
-            HaarDetector.DetectionParams faceParam = new HaarDetector.DetectionParams(10, 0, 3, 480, 1.01f, 0.3f, 0.2f, new Pen(Color.Red));
-            HaarDetector.DetectionParams eyeParam = new HaarDetector.DetectionParams(2, 1, 3, 480, 1.1f, 0.3f, 0.2f, new Pen(Color.Blue));
-            Bitmap b = ((Bitmap)mainPicture.Image);
-            HaarDetector.DResults res =faceDetector.Detect(b, faceParam);
-            if (res.DetectedOLocs != null)
-            {
-                foreach (Rectangle rec in res.DetectedOLocs)
-                {
-                    Bitmap eyeBitmap = b.Clone(rec, b.PixelFormat);
-                    HarrisDetector hd = new HarrisDetector();
-                    Bitmap gray = Binarization.ConverToGrayBitmap(eyeBitmap);
-                    int[] input = new int[gray.Width*gray.Height];
-                    for(int x=0;x< gray.Width; x++) {
-                        for(int y = 0; y < gray.Height; y++)
-                        {
-                            int val = gray.GetPixel(x, y).R;          
-                            input[y*gray.Width+x]= Convert.ToInt32(Convert.ToInt32(val) << 16 | Convert.ToInt32(val) << 8 | Convert.ToInt32(val));
-                        }
-                    }
-                    hd.init(input, eyeBitmap.Width, eyeBitmap.Height, 0.04);
-                    int[] res12= hd.process();
-                    int i = 0;
-                    i++;
-                    //HaarDetector.DResults resEye = eyeDetector.Detect(eyeBitmap, eyeParam);
-                    //if (resEye.DetectedOLocs != null)
-                    //{
-                    //    foreach (Rectangle recEye in resEye.DetectedOLocs)
-                    //    {
-                    //        if (recEye.X==0 && recEye.Y==0 && recEye.Width==0 && recEye.Height == 0)
-                    //        {
-                    //            break;
-                    //        }
-                    //        Point p = detectEyeCenter(eyeBitmap.Clone(recEye, eyeBitmap.PixelFormat));
-                    //        Graphics G = Graphics.FromImage(b);
-                    //        int startXEye = rec.X + recEye.X;
-                    //        int startYEye = rec.Y + recEye.Y;
-                    //        G.DrawRectangle(new Pen(Color.Blue), new Rectangle(startXEye, startYEye, recEye.Width, recEye.Height));
-                    //        G.DrawLine(new Pen(Color.Green), startXEye + p.X - 5,startYEye+p.Y, startXEye + p.X + 5, startYEye + p.Y);
-                    //        G.DrawLine(new Pen(Color.Green), startXEye + p.X, startYEye + p.Y - 5, startXEye + p.X, startYEye + p.Y + 5);
-                    //        G.Dispose();
-                    //    }
-                    //}
-                }
-            }
-            //res = eyeDetector.Detect(b, eyeParam);
-            //int x=res.DetectedOLocs[0].X;
-            //x = res.DetectedOLocs[0].Y;
-            //x = res.DetectedOLocs[0].Width;
-            //x = res.DetectedOLocs[0].Height;
-            mainPicture.Image = b;
-            int f = 1;
-            f++;
-        }
-
-        private Point detectEyeCenter(Bitmap image)
-        {
-            Bitmap grayscale = Binarization.ConverToGrayBitmap(image);
-            image = Binarization.OtsuBinarize(grayscale);
-            int sum = Int32.MaxValue;
-            int x = 0;
-            for(int i=1;i<image.Width; i++)
-            {
-                int rowsum = 0;
-                for(int j = 1; j < image.Height; j++)
-                {
-                    rowsum += image.GetPixel(i, j).B;
-                }
-                if (sum > rowsum)
-                {
-                    sum = rowsum;
-                    x = i;
-                }
-            }
-            int y=0;
-            int size = 0;
-            int tmpsize = 0;
-            for(int i=1;i< image.Height; i++)
-            {
-                if (image.GetPixel(x, i).B == 0)
-                {
-                    tmpsize++;
-                }
-                else
-                {
-                    if (size < tmpsize)
-                    {
-                        size = tmpsize;
-                        tmpsize = 0;
-                        y = i - size;
-                    }
-                }
-            }
-            if (tmpsize > size)
-            {
-                size = tmpsize;
-            }
-
-            return new Point(x, y+size/2);
+            iFilter = new RobertsFilter();
+            Bitmap mainBitmap = (Bitmap)mainPicture.Image;
+            Graphics g = mainPicture.CreateGraphics();
+            g.Clear(SystemColors.ControlDarkDark);
+            mainPicture.Image = iFilter.Filter(mainBitmap);
         }
     }
 }
