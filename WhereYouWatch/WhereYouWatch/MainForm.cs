@@ -10,25 +10,177 @@ using System.Windows.Forms;
 using AForge.Video;
 using AForge.Video.DirectShow;
 using WhereYouWatch.Filter;
+using MetriCam;
 
 namespace WhereYouWatch
 {
     public partial class MainForm : Form
     {
+        private WebCam camera;
         FilterInfoCollection videoDevices;
         VideoCaptureDevice videoSource;
         IFilter iFilter;
         Image newImage;
         private HaarDetector faceDetector = new HaarDetector("haarcascade_frontalface_alt.xml");
         private HaarDetector eyeDetector = new HaarDetector("haarcascade_eye.xml");
+        private HaarDetector mouthDetector = new HaarDetector("haarcascade_mouth.xml");
+        private HaarDetector noseDetector = new HaarDetector("haarcascade_nose.xml");
+        private HaarDetector.DetectionParams faceParam = new HaarDetector.DetectionParams(10, 0, 3, 480, 1.1f, 0.7f, 0.2f, new Pen(Color.Red));
+        private HaarDetector.DetectionParams eyeParam = new HaarDetector.DetectionParams(2, 0, 5, 8, 1.1f, 0.5f, 0.1f, new Pen(Color.Blue));
+
+        private HaarDetector.DetectionParams noseParam = new HaarDetector.DetectionParams(1, 0, 3, 180, 1.1f, 0.7f, 0.1f, new Pen(Color.Gold));
+        private HaarDetector.DetectionParams mouthParam = new HaarDetector.DetectionParams(1, 0, 3, 180, 1.1f, 0.7f, 0.1f, new Pen(Color.Green));
 
         public MainForm()
         {
             InitializeComponent();
+            camera = new WebCam();
+        }
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            while (!backgroundWorker1.CancellationPending)
+            {
+                camera.Update();
+                //pictureBox1.Image = camera.GetBitmap();
+                //HaarDetector.DetectionParams eyeParam = new HaarDetector.DetectionParams(2, 1, 3, 480, 1.1f, 0.3f, 0.2f, new Pen(Color.Blue));
+                Bitmap b = camera.GetBitmap();
+                HaarDetector.DResults res = faceDetector.Detect(b, faceParam);
+                HaarDetector.DResults resEye = eyeDetector.Detect(b, eyeParam);
+                //HaarDetector.DResults mouthEye = mouthDetector.Detect(b, mouthParam);
+                //HaarDetector.DResults nose = noseDetector.Detect(b, noseParam);
+
+                pictureBox1.Image = b;
+
+            }
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            HaarDetector.DetectionParams faceParam = new HaarDetector.DetectionParams(10, 0, 3, 480, 1.01f, 0.3f, 0.2f, null);
+            HaarDetector.DetectionParams eyeParam = new HaarDetector.DetectionParams(2, 1, 3, 480, 1.1f, 0.3f, 0.2f, new Pen(Color.Blue));
+            Bitmap b = ((Bitmap)mainPicture.Image);
+            HaarDetector.DResults res = faceDetector.Detect(b, faceParam);
+            Graphics imageFrame = Graphics.FromImage(b);
+            if (res.DetectedOLocs != null) //We have face list
+            {
+             
+                Color color = Color.Red;
+                Rectangle face = res.DetectedOLocs[0]; //for one face
+                imageFrame.DrawRectangle(new Pen(color), face);
+
+                Bitmap faceFrame = b.Clone(face, b.PixelFormat);
+
+                //added middle Lines(X, Y)
+                IList<Point> eyesCenters = EyesDetection(face.X, face.Y, b, faceFrame, imageFrame);
+                Point mouthPoint = MouthDetection(face.X, face.Y, b, faceFrame, imageFrame);
+
+                EyePair eyePair = GetEyePair(eyesCenters);
+                
+                //added nose if needed
+
+                //coeficients Mathing
+
+                this.sideLongTiltLabel.Text = MathService.AngleWithHorizont(eyesCenters[0], eyesCenters[1]).ToString();
+
+                double dleft = MathService.LineLength(eyesCenters[0], mouthPoint);
+                double dright = MathService.LineLength(eyesCenters[1], mouthPoint);
+
+                double first = 1.257d;
+                double second = 2;
+                double dExp = (((dleft + dright) / first) / second);
+                this.DExpLabel.Text = dExp.ToString();
+
+                double dEyes = MathService.LineLength(eyesCenters[0], eyesCenters[1]);
+                this.DEyesLabel.Text = dEyes.ToString();
+
+                this.DKoefLabel.Text = (dExp / dEyes).ToString();
+
+                //drawing triangle
+
+                imageFrame.DrawLine(new Pen(Color.Black),new Point(eyesCenters[0].X, eyesCenters[0].Y), new Point(eyesCenters[1].X, eyesCenters[1].Y));
+                imageFrame.DrawLine(new Pen(Color.Black), new Point(eyesCenters[0].X, eyesCenters[0].Y), new Point(mouthPoint.X, mouthPoint.Y));
+                imageFrame.DrawLine(new Pen(Color.Black), new Point(eyesCenters[1].X, eyesCenters[1].Y), new Point(mouthPoint.X, mouthPoint.Y));
+            }
+
+            mainPicture.Image = b;
+        }
+
+        private IList<Point> EyesDetection(int X, int Y, Bitmap original, Bitmap faceFrame, Graphics imageFrame)
+        {
+            Color color = Color.Aqua;
+            Rectangle eyesFrame = new Rectangle(X, Y, faceFrame.Width, Convert.ToInt32(faceFrame.Height * 0.6));
+
+            imageFrame.DrawRectangle(new Pen(color,1), eyesFrame);
+            HaarDetector.DetectionParams eyeParam = new HaarDetector.DetectionParams(2, 1, 3, 480, 1.1f, 0.3f, 0.2f, null);
+            Bitmap eyesRegion = original.Clone(eyesFrame, original.PixelFormat);
+
+
+            HaarDetector.DResults res = eyeDetector.Detect(eyesRegion, eyeParam);
+            IList<Point> eyesCenters = new List<Point>();
+            if (res.DetectedOLocs != null) //We have face list
+            {
+                foreach (Rectangle eye in res.DetectedOLocs)
+                {
+                    Rectangle eyeAbsolute = new Rectangle(X + eye.X, Y + eye.Y, eye.Width, eye.Height);
+                    imageFrame.DrawRectangle(new Pen(Color.BlueViolet, 1), eyeAbsolute);
+                    Point centerPoint = eyeAbsolute.Center();
+                    eyesCenters.Add(centerPoint);
+
+                    DrawPoint(centerPoint, imageFrame, Color.Fuchsia);
+                }
+            }
+            return eyesCenters;
+        }
+
+        private void DrawPoint(Point centerPoint, Graphics imageFrame, Color color)
+        {
+            float x = centerPoint.X - 2;
+            float y = centerPoint.Y - 2;
+            float width = 2 * 2;
+            float height = 2 * 2;
+            imageFrame.DrawEllipse(new Pen(color, 2), x, y, width, height);
         }
 
 
- 
+        private Point MouthDetection(int X, int Y, Bitmap original, Bitmap faceFrame, Graphics imageFrame)
+        {
+            Color color = Color.Pink;
+            int mouthFrameHeight = Convert.ToInt32(faceFrame.Height * 0.5);
+            int mouthFrameY = Convert.ToInt32(faceFrame.Height * 0.7);
+            Rectangle mouthFrame = new Rectangle(X, mouthFrameY, faceFrame.Width, mouthFrameHeight);
+            imageFrame.DrawRectangle(new Pen(color, 1), mouthFrame);
+            Bitmap mouthsRegion = original.Clone(mouthFrame, original.PixelFormat);
+
+            HaarDetector.DResults mouths = mouthDetector.Detect(mouthsRegion, mouthParam);
+
+            Point centerPoint = new Point();
+            if (mouths.DetectedOLocs != null)
+            {
+                Rectangle mouth = mouths.DetectedOLocs[0];
+                Rectangle mouthAbsolute = new Rectangle(X + mouth.X, mouth.Y + mouthFrameY, mouth.Width, mouth.Height);
+                imageFrame.DrawRectangle(new Pen(Color.LightYellow, 1), mouthAbsolute);
+                centerPoint = mouthAbsolute.Center();
+                DrawPoint(centerPoint, imageFrame, Color.Yellow);
+            }
+            return centerPoint;
+        }
+
+        private EyePair GetEyePair(IList<Point> eyesCenters)
+        {
+            EyePair result = new EyePair();
+            if (eyesCenters[0].X < eyesCenters[1].X)
+            {
+                result.LeftEye = eyesCenters[0];
+                result.RightEye = eyesCenters[1];
+            }
+            else
+            {
+                result.LeftEye = eyesCenters[1];
+                result.RightEye = eyesCenters[0];
+            }
+            return result;
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
             videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
@@ -168,47 +320,7 @@ namespace WhereYouWatch
             mainPicture.Image = iFilter.Filter(mainBitmap);
         }
 
-        private void button1_Click_1(object sender, EventArgs e)
-        {
-            HaarDetector.DetectionParams faceParam = new HaarDetector.DetectionParams(10, 0, 3, 480, 1.01f, 0.3f, 0.2f, new Pen(Color.Red));
-            HaarDetector.DetectionParams eyeParam = new HaarDetector.DetectionParams(2, 1, 3, 480, 1.1f, 0.3f, 0.2f, new Pen(Color.Blue));
-            Bitmap b = ((Bitmap)mainPicture.Image);
-            HaarDetector.DResults res = faceDetector.Detect(b, faceParam);
-            if (res.DetectedOLocs != null)
-            {
-                foreach (Rectangle rec in res.DetectedOLocs)
-                {
-                    Bitmap eyeBitmap = b.Clone(rec, b.PixelFormat);
-                    HaarDetector.DResults resEye = eyeDetector.Detect(eyeBitmap, eyeParam);
-                    if (resEye.DetectedOLocs != null)
-                    {
-                        foreach (Rectangle recEye in resEye.DetectedOLocs)
-                        {
-                            if (recEye.X == 0 && recEye.Y == 0 && recEye.Width == 0 && recEye.Height == 0)
-                            {
-                                break;
-                            }
-                            Point p = detectEyeCenter(eyeBitmap.Clone(recEye, eyeBitmap.PixelFormat));
-                            Graphics G = Graphics.FromImage(b);
-                            int startXEye = rec.X + recEye.X;
-                            int startYEye = rec.Y + recEye.Y;
-                            G.DrawRectangle(new Pen(Color.Blue), new Rectangle(startXEye, startYEye, recEye.Width, recEye.Height));
-                            G.DrawLine(new Pen(Color.Green), startXEye + p.X - 5, startYEye + p.Y, startXEye + p.X + 5, startYEye + p.Y);
-                            G.DrawLine(new Pen(Color.Green), startXEye + p.X, startYEye + p.Y - 5, startXEye + p.X, startYEye + p.Y + 5);
-                            G.Dispose();
-                        }
-                    }
-                }
-            }
-            //res = eyeDetector.Detect(b, eyeParam);
-            //int x=res.DetectedOLocs[0].X;
-            //x = res.DetectedOLocs[0].Y;
-            //x = res.DetectedOLocs[0].Width;
-            //x = res.DetectedOLocs[0].Height;
-            mainPicture.Image = b;
-            int f = 1;
-            f++;
-        }
+        
 
         private Point detectEyeCenter(Bitmap image)
         {
@@ -253,6 +365,28 @@ namespace WhereYouWatch
             }
 
             return new Point(x, y + size / 2);
+        }
+
+        private void ConnectDisconnect_Click(object sender, EventArgs e)
+        {
+            if (!camera.IsConnected())
+            {
+                camera.Connect();
+                ConnectDisconnect.Text = "&Disconnect";
+                backgroundWorker1.RunWorkerAsync();
+            }
+            else
+            {
+                backgroundWorker1.CancelAsync();
+            }
+        }
+
+        
+
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            camera.Disconnect();
+            ConnectDisconnect.Text = "&Connect";
         }
     }
 }
