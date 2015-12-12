@@ -438,8 +438,6 @@ namespace WhereYouWatch
             }
         }
 
-        
-
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             camera.Disconnect();
