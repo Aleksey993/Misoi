@@ -239,18 +239,18 @@ namespace WhereYouWatch
                 centerPoint = mouthAbsolute.Center();
                 DrawPoint(centerPoint, imageFrame, Color.Yellow);
             }
-            if (centerPoint.X == 0 && centerPoint.Y == 0)
-            {
+            //if (centerPoint.X == 0 && centerPoint.Y == 0)
+            //{
                 mouthFrame = new Rectangle(Convert.ToInt32(X + faceFrame.Width*0.2), mouthFrameY, Convert.ToInt32(faceFrame.Width*0.6), mouthFrameHeight);
                 mouthsRegion = original.Clone(mouthFrame, original.PixelFormat);
                 int xValue = 0;
                 int yValue = 0;
                 int count = 0;
-                for(int x=0;x< mouthsRegion.Width; x++)
+                for(int x=1;x< mouthsRegion.Width-1; x++)
                 {
-                    for(int y=0;y< mouthsRegion.Height; y++)
+                    for(int y=1;y< mouthsRegion.Height-1; y++)
                     {
-                        if ((mouthsRegion.GetPixel(x, y).R - mouthsRegion.GetPixel(x, y).G)>100 || (mouthsRegion.GetPixel(x, y).R-mouthsRegion.GetPixel(x, y).B)>100)
+                        if ((mouthsRegion.GetPixel(x, y).R - mouthsRegion.GetPixel(x, y).G)>50 && (mouthsRegion.GetPixel(x, y).R-mouthsRegion.GetPixel(x, y).B)>20 && mouthsRegion.GetPixel(x, y).R>150)
                         {
                             xValue += x;
                             yValue += y;
@@ -263,9 +263,11 @@ namespace WhereYouWatch
                 DrawPoint(centerPoint, imageFrame, Color.Yellow);
                 Point p=new Point(Convert.ToInt32(X *1.2)+ xValue / count, mouthFrameY + yValue / count);
                 DrawPoint(p, imageFrame, Color.Green);
-                return p;
+                if (centerPoint.X == 0 && centerPoint.Y == 0)
+                    {
+                    return p;
+                    }
                 }
-            }
             return centerPoint;
         }
 
