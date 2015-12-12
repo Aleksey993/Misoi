@@ -36,6 +36,7 @@ namespace WhereYouWatch
             InitializeComponent();
             camera = new WebCam();
         }
+        //Real-Time for debug
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             while (!backgroundWorker1.CancellationPending)
@@ -44,10 +45,57 @@ namespace WhereYouWatch
                 //pictureBox1.Image = camera.GetBitmap();
                 //HaarDetector.DetectionParams eyeParam = new HaarDetector.DetectionParams(2, 1, 3, 480, 1.1f, 0.3f, 0.2f, new Pen(Color.Blue));
                 Bitmap b = camera.GetBitmap();
-                HaarDetector.DResults res = faceDetector.Detect(b, faceParam);
-                HaarDetector.DResults resEye = eyeDetector.Detect(b, eyeParam);
+
                 //HaarDetector.DResults mouthEye = mouthDetector.Detect(b, mouthParam);
                 //HaarDetector.DResults nose = noseDetector.Detect(b, noseParam);
+                HaarDetector.DetectionParams faceParam = new HaarDetector.DetectionParams(10, 0, 3, 480, 1.01f, 0.3f, 0.2f, null);
+                HaarDetector.DetectionParams eyeParam = new HaarDetector.DetectionParams(2, 1, 3, 480, 1.1f, 0.3f, 0.2f, new Pen(Color.Blue));
+
+                HaarDetector.DResults res = faceDetector.Detect(b, faceParam);
+                Graphics imageFrame = Graphics.FromImage(b);
+                if (res.DetectedOLocs != null) //We have face list
+                {
+
+                    Color color = Color.Red;
+                    Rectangle face = res.DetectedOLocs[0]; //for one face
+                    imageFrame.DrawRectangle(new Pen(color), face);
+
+                    Bitmap faceFrame = b.Clone(face, b.PixelFormat);
+
+                    //added middle Lines(X, Y)
+                    IList<Point> eyesCenters = EyesDetection(face.X, face.Y, b, faceFrame, imageFrame);
+                    Point mouthPoint = MouthDetection(face.X, face.Y, b, faceFrame, imageFrame);
+
+                    //EyePair eyePair = GetEyePair(eyesCenters);
+
+                    //added nose if needed
+
+                    //coeficients Mathing
+
+                    //this.sideLongTiltLabel.Text = MathService.AngleWithHorizont(eyesCenters[0], eyesCenters[1]).ToString();
+
+                    //double dleft = MathService.LineLength(eyesCenters[0], mouthPoint);
+                    //double dright = MathService.LineLength(eyesCenters[1], mouthPoint);
+
+                    //double first = 1.257d;
+                    //double second = 2;
+                    //double dExp = (((dleft + dright) / first) / second);
+                    //this.DExpLabel.Text = dExp.ToString();
+
+                    //double dEyes = MathService.LineLength(eyesCenters[0], eyesCenters[1]);
+                    //this.DEyesLabel.Text = dEyes.ToString();
+
+                    //this.DKoefLabel.Text = (dExp / dEyes).ToString();
+
+                    //drawing triangle
+
+                    imageFrame.DrawLine(new Pen(Color.Black), new Point(eyesCenters[0].X, eyesCenters[0].Y), new Point(eyesCenters[1].X, eyesCenters[1].Y));
+                    imageFrame.DrawLine(new Pen(Color.Black), new Point(eyesCenters[0].X, eyesCenters[0].Y), new Point(mouthPoint.X, mouthPoint.Y));
+                    imageFrame.DrawLine(new Pen(Color.Black), new Point(eyesCenters[1].X, eyesCenters[1].Y), new Point(mouthPoint.X, mouthPoint.Y));
+                }
+
+                mainPicture.Image = b;
+
 
                 pictureBox1.Image = b;
 
@@ -63,7 +111,7 @@ namespace WhereYouWatch
             Graphics imageFrame = Graphics.FromImage(b);
             if (res.DetectedOLocs != null) //We have face list
             {
-             
+
                 Color color = Color.Red;
                 Rectangle face = res.DetectedOLocs[0]; //for one face
                 imageFrame.DrawRectangle(new Pen(color), face);
@@ -74,34 +122,39 @@ namespace WhereYouWatch
                 IList<Point> eyesCenters = EyesDetection(face.X, face.Y, b, faceFrame, imageFrame);
                 Point mouthPoint = MouthDetection(face.X, face.Y, b, faceFrame, imageFrame);
 
-                EyePair eyePair = GetEyePair(eyesCenters);
-                
+                //EyePair eyePair = GetEyePair(eyesCenters); //Double eye(left or right)
+
                 //added nose if needed
 
                 //coeficients Mathing
 
-                this.sideLongTiltLabel.Text = MathService.AngleWithHorizont(eyesCenters[0], eyesCenters[1]).ToString();
+                if (eyesCenters.Count >= 2)
+                {
+                    this.sideLongTiltLabel.Text = MathService.AngleWithHorizont(eyesCenters[0], eyesCenters[1]).ToString();
 
-                double dleft = MathService.LineLength(eyesCenters[0], mouthPoint);
-                double dright = MathService.LineLength(eyesCenters[1], mouthPoint);
+                    double dleft = MathService.LineLength(eyesCenters[0], mouthPoint);
+                    double dright = MathService.LineLength(eyesCenters[1], mouthPoint);
 
-                double first = 1.257d;
-                double second = 2;
-                double dExp = (((dleft + dright) / first) / second);
-                this.DExpLabel.Text = dExp.ToString();
+                    double first = 1.257d;
+                    double second = 2;
+                    double dExp = (((dleft + dright) / first) / second);
+                    this.DExpLabel.Text = dExp.ToString();
 
-                double dEyes = MathService.LineLength(eyesCenters[0], eyesCenters[1]);
-                this.DEyesLabel.Text = dEyes.ToString();
+                    double dEyes = MathService.LineLength(eyesCenters[0], eyesCenters[1]);
+                    this.DEyesLabel.Text = dEyes.ToString();
 
-                this.DKoefLabel.Text = (dExp / dEyes).ToString();
+                    this.DKoefLabel.Text = (dExp / dEyes).ToString();
 
-                //drawing triangle
+                    //drawing triangle
 
-                imageFrame.DrawLine(new Pen(Color.Black),new Point(eyesCenters[0].X, eyesCenters[0].Y), new Point(eyesCenters[1].X, eyesCenters[1].Y));
-                imageFrame.DrawLine(new Pen(Color.Black), new Point(eyesCenters[0].X, eyesCenters[0].Y), new Point(mouthPoint.X, mouthPoint.Y));
-                imageFrame.DrawLine(new Pen(Color.Black), new Point(eyesCenters[1].X, eyesCenters[1].Y), new Point(mouthPoint.X, mouthPoint.Y));
+                    imageFrame.DrawLine(new Pen(Color.Black), new Point(eyesCenters[0].X, eyesCenters[0].Y), new Point(eyesCenters[1].X, eyesCenters[1].Y));
+                    imageFrame.DrawLine(new Pen(Color.Black), new Point(eyesCenters[0].X, eyesCenters[0].Y), new Point(mouthPoint.X, mouthPoint.Y));
+                    imageFrame.DrawLine(new Pen(Color.Black), new Point(eyesCenters[1].X, eyesCenters[1].Y), new Point(mouthPoint.X, mouthPoint.Y));
+
+                }
+                else
+                    this.sideLongTiltLabel.Text = "Warning Detected. Try again";
             }
-
             mainPicture.Image = b;
         }
 
@@ -121,6 +174,10 @@ namespace WhereYouWatch
             {
                 foreach (Rectangle eye in res.DetectedOLocs)
                 {
+                    if (eye.X == 0 && eye.Y == 0)
+                    {
+                        break;
+                    }
                     Rectangle eyeAbsolute = new Rectangle(X + eye.X, Y + eye.Y, eye.Width, eye.Height);
                     imageFrame.DrawRectangle(new Pen(Color.BlueViolet, 1), eyeAbsolute);
                     Point centerPoint = eyeAbsolute.Center();
