@@ -290,9 +290,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(410, 792);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(64, 25);
+            this.label2.Size = new System.Drawing.Size(84, 25);
             this.label2.TabIndex = 23;
-            this.label2.Text = "DExp";
+            this.label2.Text = "Vertical";
             // 
             // DExpLabel
             // 
