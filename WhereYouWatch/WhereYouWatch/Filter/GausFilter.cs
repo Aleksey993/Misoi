@@ -9,7 +9,7 @@ namespace WhereYouWatch.Filter
 {
     class GausFilter : IFilter
     {
-        private int SIZE = 7; 
+        private int SIZE = 3; 
 
         public Bitmap Filter(Bitmap originalBitmap)
         {

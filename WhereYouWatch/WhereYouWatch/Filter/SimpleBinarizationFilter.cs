@@ -12,7 +12,7 @@ namespace WhereYouWatch.Filter
         //метод простой бинаризации, пока не используется, в дальнейшем - с помощью него будет происходить бинар-я с заданным порогом
         public Bitmap Filter(Bitmap originalBitmap)
         {
-            int treshold = 0; // порог  
+            int treshold = 5; // порог  
             Color color; // цвет - будет разбиваться на RGB
             int average = 0;  // средний цвет = яркость
             Bitmap resultBitmap = new Bitmap(originalBitmap.Width, originalBitmap.Height);

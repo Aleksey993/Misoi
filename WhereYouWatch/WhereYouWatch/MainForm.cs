@@ -23,8 +23,8 @@ namespace WhereYouWatch
         Image newImage;
         private HaarDetector faceDetector = new HaarDetector("haarcascade_frontalface_alt.xml");
         private HaarDetector eyeDetector = new HaarDetector("haarcascade_eye.xml");
-        private HaarDetector mouthDetector = new HaarDetector("haarcascade_mouth.xml");
-        private HaarDetector noseDetector = new HaarDetector("haarcascade_nose.xml");
+        private HaarDetector mouthDetector = new HaarDetector("F:/VisualRepo2/WhereYouWatch/WhereYouWatch/WhereYouWatch/bin/Debug/haarcascade_mouth.xml");
+        //private HaarDetector noseDetector = new HaarDetector("haarcascade_nose.xml");
         private HaarDetector.DetectionParams faceParam = new HaarDetector.DetectionParams(10, 0, 3, 480, 1.1f, 0.7f, 0.2f, new Pen(Color.Red));
         private HaarDetector.DetectionParams eyeParam = new HaarDetector.DetectionParams(2, 0, 5, 8, 1.1f, 0.5f, 0.1f, new Pen(Color.Blue));
 
@@ -172,13 +172,33 @@ namespace WhereYouWatch
             IList<Point> eyesCenters = new List<Point>();
             if (res.DetectedOLocs != null) //We have face list
             {
+                int eyecount = 0;
                 foreach (Rectangle eye in res.DetectedOLocs)
                 {
                     if (eye.X == 0 && eye.Y == 0)
                     {
                         break;
                     }
+                    eyecount++;
                     Rectangle eyeAbsolute = new Rectangle(X + eye.X, Y + eye.Y, eye.Width, eye.Height);
+
+                    Bitmap image = eyesRegion.Clone(eye, original.PixelFormat);
+                    Graphics graf = Graphics.FromImage(image);
+                    Rectangle recImage = getEye(image);
+                    graf.DrawEllipse(new Pen(Color.Blue), recImage);
+
+                    if (eyecount == 1)
+                    {
+                        eye1.Image = image;
+                    }
+                    if (eyecount == 2)
+                    {
+                        eye2.Image = image;
+                    }
+                    if (eyecount == 3)
+                    {
+                        eye3.Image = image;
+                    }
                     imageFrame.DrawRectangle(new Pen(Color.BlueViolet, 1), eyeAbsolute);
                     Point centerPoint = eyeAbsolute.Center();
                     eyesCenters.Add(centerPoint);
@@ -202,8 +222,8 @@ namespace WhereYouWatch
         private Point MouthDetection(int X, int Y, Bitmap original, Bitmap faceFrame, Graphics imageFrame)
         {
             Color color = Color.Pink;
-            int mouthFrameHeight = Convert.ToInt32(faceFrame.Height * 0.5);
-            int mouthFrameY = Convert.ToInt32(faceFrame.Height * 0.7);
+            int mouthFrameHeight = Convert.ToInt32(faceFrame.Height * 0.4);
+            int mouthFrameY = Convert.ToInt32(Y+faceFrame.Height*0.6);
             Rectangle mouthFrame = new Rectangle(X, mouthFrameY, faceFrame.Width, mouthFrameHeight);
             imageFrame.DrawRectangle(new Pen(color, 1), mouthFrame);
             Bitmap mouthsRegion = original.Clone(mouthFrame, original.PixelFormat);
@@ -218,6 +238,33 @@ namespace WhereYouWatch
                 imageFrame.DrawRectangle(new Pen(Color.LightYellow, 1), mouthAbsolute);
                 centerPoint = mouthAbsolute.Center();
                 DrawPoint(centerPoint, imageFrame, Color.Yellow);
+            }
+            if (centerPoint.X == 0 && centerPoint.Y == 0)
+            {
+                mouthFrame = new Rectangle(Convert.ToInt32(X + faceFrame.Width*0.2), mouthFrameY, Convert.ToInt32(faceFrame.Width*0.6), mouthFrameHeight);
+                mouthsRegion = original.Clone(mouthFrame, original.PixelFormat);
+                int xValue = 0;
+                int yValue = 0;
+                int count = 0;
+                for(int x=0;x< mouthsRegion.Width; x++)
+                {
+                    for(int y=0;y< mouthsRegion.Height; y++)
+                    {
+                        if ((mouthsRegion.GetPixel(x, y).R - mouthsRegion.GetPixel(x, y).G)>100 || (mouthsRegion.GetPixel(x, y).R-mouthsRegion.GetPixel(x, y).B)>100)
+                        {
+                            xValue += x;
+                            yValue += y;
+                            count++;
+                        }
+                    }
+                }
+                if (count > 0)
+                {
+                DrawPoint(centerPoint, imageFrame, Color.Yellow);
+                Point p=new Point(Convert.ToInt32(X *1.2)+ xValue / count, mouthFrameY + yValue / count);
+                DrawPoint(p, imageFrame, Color.Green);
+                return p;
+                }
             }
             return centerPoint;
         }
@@ -442,6 +489,189 @@ namespace WhereYouWatch
         {
             camera.Disconnect();
             ConnectDisconnect.Text = "&Connect";
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            iFilter = new RobertsFilter();
+            Bitmap mainBitmap = (Bitmap)mainPicture.Image;
+            Graphics g = mainPicture.CreateGraphics();
+            g.Clear(SystemColors.ControlDarkDark);
+            mainPicture.Image = iFilter.Filter(mainBitmap);
+        }
+
+        private Rectangle getEye(Bitmap image)
+        {
+            image = FilterService.AddContrast(image, 3.0);
+            iFilter = new GausFilter();
+            image = iFilter.Filter(image);
+            iFilter = new SimpleBinarizationFilter();
+            image = iFilter.Filter(image);
+            Graphics graf = Graphics.FromImage(image);
+            int height = image.Height;
+            int width = image.Width;
+            int sum = 0;
+            int linex = 0;
+            int liney = 0;
+            for (int x = 5; x < width - 5; x++)
+            {
+                int tmpsum = 0;
+                for (int y = 5; y < height - 5; y++)
+                {
+                    if ((image).GetPixel(x, y).R < 10)
+                    {
+                        tmpsum += 1;
+                    }
+                }
+                if (tmpsum > sum && tmpsum < height * 5 / 9)
+                {
+                    linex = x;
+                    sum = tmpsum;
+                }
+            }
+            int glassWidth = 0;
+            int minValue = 5;
+            for (int i = minValue; i < height - 5; i++)
+            {
+                int rightsize = 0;
+                int leftsize = 0;
+                if (image.GetPixel(linex, i).B < 10)
+                {
+                    int size = 0;
+                    while (image.GetPixel(linex + size, i).B < 10)
+                    {
+                        rightsize++;
+                        size++;
+                        if (linex + size >= width)
+                        {
+                            break;
+                        }
+                    }
+                    size = 0;
+                    while (image.GetPixel(linex - size, i).B < 10)
+                    {
+                        leftsize++;
+                        size++;
+                        if (linex - size < 0)
+                        {
+                            break;
+                        }
+                    }
+                }
+                if (leftsize + rightsize > width / 5)
+                {
+                    minValue = i;
+                }
+            }
+            for (int i = minValue; i < height - 5; i++)
+            {
+                int rightsize = 0;
+                int leftsize = 0;
+                if (image.GetPixel(linex, i).B < 10)
+                {
+                    int size = 0;
+                    while (image.GetPixel(linex + size, i).B < 10)
+                    {
+                        rightsize++;
+                        size++;
+                        if (linex + size >= width)
+                        {
+                            break;
+                        }
+                    }
+                    size = 0;
+                    while (image.GetPixel(linex - size, i).B < 10)
+                    {
+                        leftsize++;
+                        size++;
+                        if (linex - size < 0)
+                        {
+                            break;
+                        }
+                    }
+                }
+                int tmpwidth;
+                if (leftsize > rightsize)
+                {
+                    tmpwidth = rightsize;
+                }
+                else
+                {
+                    tmpwidth = leftsize;
+                }
+
+                if (tmpwidth > glassWidth)
+                {
+                    liney = i;
+                    glassWidth = tmpwidth;
+                }
+            }
+            Boolean isNeedChange = true;
+            int count = 1;
+            int r = 0;
+            while (isNeedChange)
+            {
+                count++;
+                int rightsize = 0;
+                int leftsize = 0;
+                int topsize = 0;
+                int bottomsize = 0;
+                int size = 0;
+                while (image.GetPixel(linex + size, liney).B < 10)
+                {
+                    rightsize++;
+                    size++;
+                    if (linex + size >= width)
+                    {
+                        break;
+                    }
+                }
+                size = 0;
+                while (image.GetPixel(linex - size, liney).B < 10)
+                {
+                    leftsize++;
+                    size++;
+                    if (linex - size < 0)
+                    {
+                        break;
+                    }
+                }
+                linex += (rightsize - leftsize) / 2;
+                size = 0;
+                while (image.GetPixel(linex, liney + size).B < 10)
+                {
+                    topsize++;
+                    size++;
+                    if (liney + size >= height)
+                    {
+                        break;
+                    }
+                }
+                size = 0;
+                while (image.GetPixel(linex, liney - size).B < 10)
+                {
+                    bottomsize++;
+                    size++;
+                    if (liney - size < 0)
+                    {
+                        break;
+                    }
+                }
+                r = (leftsize + rightsize) / 2;
+                if (bottomsize != topsize)
+                {
+                    liney += (topsize - bottomsize) / 2;
+                }
+                else
+                {
+                    isNeedChange = false;
+                }
+                if (count > 10)
+                {
+                    break;
+                }
+            }
+            return new Rectangle(linex - r, liney - r, r * 2,r*2);
         }
     }
 }
