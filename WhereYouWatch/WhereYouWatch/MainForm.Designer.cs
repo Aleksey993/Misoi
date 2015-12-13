@@ -60,6 +60,7 @@
             this.eye2 = new System.Windows.Forms.PictureBox();
             this.eye3 = new System.Windows.Forms.PictureBox();
             this.EyeDirection = new System.Windows.Forms.Label();
+            this.labelDirectionEyeY = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.mainPicture)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.realPicture)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -231,7 +232,7 @@
             // 
             // robertsFilterButton
             // 
-            this.robertsFilterButton.Location = new System.Drawing.Point(1064, 550);
+            this.robertsFilterButton.Location = new System.Drawing.Point(1064, 627);
             this.robertsFilterButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.robertsFilterButton.Name = "robertsFilterButton";
             this.robertsFilterButton.Size = new System.Drawing.Size(150, 44);
@@ -242,7 +243,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(1064, 606);
+            this.button1.Location = new System.Drawing.Point(1069, 683);
             this.button1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(150, 44);
@@ -356,7 +357,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(1064, 687);
+            this.button2.Location = new System.Drawing.Point(1064, 742);
             this.button2.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(150, 44);
@@ -400,11 +401,20 @@
             this.EyeDirection.Size = new System.Drawing.Size(0, 25);
             this.EyeDirection.TabIndex = 33;
             // 
+            // labelDirectionEyeY
+            // 
+            this.labelDirectionEyeY.AutoSize = true;
+            this.labelDirectionEyeY.Location = new System.Drawing.Point(1064, 568);
+            this.labelDirectionEyeY.Name = "labelDirectionEyeY";
+            this.labelDirectionEyeY.Size = new System.Drawing.Size(0, 25);
+            this.labelDirectionEyeY.TabIndex = 34;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1362, 806);
+            this.Controls.Add(this.labelDirectionEyeY);
             this.Controls.Add(this.EyeDirection);
             this.Controls.Add(this.eye3);
             this.Controls.Add(this.eye2);
@@ -484,6 +494,7 @@
         private System.Windows.Forms.PictureBox eye2;
         private System.Windows.Forms.PictureBox eye3;
         private System.Windows.Forms.Label EyeDirection;
+        private System.Windows.Forms.Label labelDirectionEyeY;
     }
 }
 
