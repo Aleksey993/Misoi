@@ -199,6 +199,7 @@ namespace WhereYouWatch
                     {
                         eye3.Image = image;
                     }
+                    EyeDirection.Text = DirectionEye(eye, recImage);
                     imageFrame.DrawRectangle(new Pen(Color.BlueViolet, 1), eyeAbsolute);
                     Point centerPoint = eyeAbsolute.Center();
                     eyesCenters.Add(centerPoint);
@@ -208,7 +209,18 @@ namespace WhereYouWatch
             }
             return eyesCenters;
         }
-
+        private String DirectionEye(Rectangle mainSquare, Rectangle eye)
+        {
+            string label = "";
+            double dcenter = mainSquare.Width/2;
+            if (eye.X > dcenter)
+            {
+                label = "left";
+            }
+            else
+                label = "right";
+            return label;
+        }
         private void DrawPoint(Point centerPoint, Graphics imageFrame, Color color)
         {
             float x = centerPoint.X - 2;
